@@ -10,8 +10,8 @@ RUN apk update \
     && apk add nginx \
 #   // create non-existing /run/nginx directory (PID)
     && mkdir -p /run/nginx \
-#   // create directory for SSL certificates (volume)
-    && mkdir -p /var/ssl \
+#   // create directory for SSL certificates
+    && mkdir -p /etc/nginx/ssl \
 #   // delete default vHost configuration
     && rm /etc/nginx/conf.d/default.conf \
 #   // delete default vHost web directory
@@ -24,7 +24,7 @@ ADD ./nginx.conf /etc/nginx/nginx.conf
 STOPSIGNAL SIGTERM
 
 # ------ define volumes ------ #
-VOLUME ["/var/www", "/var/ssl", "/etc/nginx"]
+VOLUME ["/etc/nginx", "/var/www"]
 
 # ------ entrypoint for container ------ #
 CMD ["nginx", "-g", "daemon off;"]

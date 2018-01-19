@@ -127,12 +127,13 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	\
 	# forward request and error logs to docker log collector
 	&& ln -sf /dev/stdout /var/log/nginx/access.log \
-    && ln -sf /dev/stderr /var/log/nginx/error.log
+    && ln -sf /dev/stderr /var/log/nginx/error.log \
+	&& mkdir -p /var/cache/nginx
 
 #   // create directory for SSL certificates
 RUN mkdir -p /etc/nginx/ssl \
-#   // create cache directory
-	&& mkdir -p /var/cache/nginx
+#   // create symbolic link for ssl certificates (beautification)
+	&& ln -s /var/ssl /etc/nginx/ssl
 
 #   // add default nginx.conf file
 ADD ./nginx.conf /etc/nginx/nginx.conf
@@ -141,7 +142,7 @@ ADD ./nginx.conf /etc/nginx/nginx.conf
 STOPSIGNAL SIGTERM
 
 # ------ define volumes ------ #
-VOLUME ["/etc/nginx", "/var/www"]
+VOLUME ["/etc/nginx", "/var/ssl", "/var/www"]
 
 # ------ entrypoint for container ------ #
 CMD ["nginx", "-g", "daemon off;"]

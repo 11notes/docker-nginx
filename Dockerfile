@@ -130,7 +130,9 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
 #   // create directory for SSL certificates
-RUN mkdir -p /etc/nginx/ssl
+RUN mkdir -p /etc/nginx/ssl \
+#   // create cache directory
+	&& mkdir -p /var/cache/nginx
 
 #   // add default nginx.conf file
 ADD ./nginx.conf /etc/nginx/nginx.conf

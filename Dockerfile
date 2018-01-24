@@ -3,7 +3,7 @@ FROM alpine:3.5
 LABEL maintainer="11notes <docker@11notes.ch>"
 
 # ------ original nginx docker alpine source compile! ------ #
-ENV NGINX_VERSION 1.12.2
+ENV NGINX_VERSION 1.13.8
 
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& CONFIG="\
@@ -130,19 +130,25 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
     && ln -sf /dev/stderr /var/log/nginx/error.log \
 	&& mkdir -p /var/cache/nginx
 
-#   // create directory for SSL certificates
-RUN mkdir -p /etc/nginx/ssl \
-#   // create symbolic link for ssl certificates (beautification)
-	&& ln -s /var/ssl /etc/nginx/ssl
+#   // create directory for nginx config
+RUN mkdir -p /var/nginx \
+#   // create directory for nginx vhosts
+	&& mkdir -p /var/nginx/conf.d \
+#   // create directory for nginx vssl
+	&& mkdir -p /var/ssl \
+#   // create directory for www data
+	&& mkdir -p /var/www
 
 #   // add default nginx.conf file
 ADD ./nginx.conf /etc/nginx/nginx.conf
+
+RUN ln -s /etc/nginx/nginx.conf /var/nginx/nginx.conf
 
 #   // default SIGTERM to docker
 STOPSIGNAL SIGTERM
 
 # ------ define volumes ------ #
-VOLUME ["/etc/nginx", "/var/ssl", "/var/www"]
+VOLUME ["/var/nginx", "/var/ssl", "/var/www"]
 
 # ------ entrypoint for container ------ #
 CMD ["nginx", "-g", "daemon off;"]

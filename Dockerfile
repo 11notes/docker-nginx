@@ -140,9 +140,9 @@ RUN mkdir -p /var/nginx \
 	&& mkdir -p /var/www
 
 #   // add default nginx.conf file
-ADD ./nginx.conf /etc/nginx/nginx.conf
+ADD ./nginx.conf /var/nginx/nginx.conf
 
-RUN ln -s /etc/nginx/nginx.conf /var/nginx/nginx.conf
+RUN ln -s /var/nginx/nginx.conf /etc/nginx/nginx.conf
 
 #   // default SIGTERM to docker
 STOPSIGNAL SIGTERM

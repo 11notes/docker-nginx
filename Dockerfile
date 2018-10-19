@@ -1,8 +1,8 @@
 # ------ Header ------ #
-FROM alpine:3.7
+FROM alpine:3.8
 
 # ------ original nginx docker alpine source compile! ------ #
-ENV NGINX_VERSION 1.15.3
+ENV NGINX_VERSION 1.15.5
 
 #	additional nginx modules
 ENV ADD_MODULE_HEADERS_MORE_NGINX_VERSION 0.33
@@ -28,8 +28,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
 		--http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp \
 		--http-scgi-temp-path=/var/cache/nginx/scgi_temp \
-		--user=nginx \
-		--group=nginx \
 		--with-http_ssl_module \
 		--with-http_realip_module \
 		--with-http_addition_module \
@@ -142,7 +140,7 @@ RUN rm /etc/nginx/nginx.conf \
 	&& mkdir -p /var/nginx \
 	&& mkdir -p /var/nginx/conf.d \
 	&& mkdir -p /var/ssl \
-	&& mkdir -p /var/www \
+	&& mkdir -p /var/www
 
 COPY ./nginx.conf /var/nginx/nginx.conf
 RUN ln -s /var/nginx/nginx.conf /etc/nginx/nginx.conf

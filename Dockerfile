@@ -143,6 +143,7 @@ RUN rm /etc/nginx/nginx.conf \
 	&& mkdir -p /var/www
 
 COPY ./nginx.conf /var/nginx/nginx.conf
+
 RUN ln -s /var/nginx/nginx.conf /etc/nginx/nginx.conf
 
 STOPSIGNAL SIGTERM

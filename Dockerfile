@@ -146,12 +146,15 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& ln -sf /dev/stdout /var/log/nginx/access.log \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log
 
+USER nginx
+
 RUN rm /etc/nginx/nginx.conf \
 	&& mkdir -p /var/cache/nginx \
 	&& mkdir -p /var/nginx \
 	&& mkdir -p /var/nginx/conf.d \
 	&& mkdir -p /var/ssl \
-	&& mkdir -p /var/www
+	&& mkdir -p /var/www \
+	&& chown nignx:nginx /var/cache/nginx /var/nginx /var/ssl /var/www -R
 
 COPY ./nginx.conf /var/nginx/nginx.conf
 

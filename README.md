@@ -29,7 +29,7 @@ docker run --name nginx \
     -d 11notes/nginx:latest
 ```
 
-## difference between nginx:1.14.2-alpine
+## difference between official container
 
 Additional plugins:
 
@@ -46,8 +46,8 @@ Nginx configuration and uid/gid:
 
 ## build with
 
-* [alpine:3.8](https://github.com/gliderlabs/docker-alpine/blob/c14b86580b9f86f42296050ec7564faf6b6db9be/versions/library-3.8/x86_64/Dockerfile) - alpine linux
-* [nginx/alpine:stable](https://github.com/nginxinc/docker-nginx/blob/1fe92b86a3c3a6482c54a0858d1fcb22e591279f/mainline/alpine/Dockerfile) - official nginx container
+* [alpine](https://github.com/gliderlabs/docker-alpine) - alpine linux
+* [nginx](https://github.com/nginxinc/docker-nginx) - official docker images
 
 ## tips
 

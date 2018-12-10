@@ -60,8 +60,8 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		--with-http_v2_module \
 		--add-module=/usr/lib/nginx/modules/headers-more-nginx-module-$ADD_MODULE_HEADERS_MORE_NGINX_VERSION \
 	" \
-	&& addgroup -S nginx \
-	&& adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \
+	&& addgroup --gid 1000 -S nginx \
+	&& adduser --uid 1000 -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \
 	&& apk add --no-cache --virtual .build-deps \
 		gcc \
 		libc-dev \
@@ -146,24 +146,34 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& ln -sf /dev/stdout /var/log/nginx/access.log \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log
 
-USER nginx
 
-RUN rm /etc/nginx/nginx.conf \
-	&& mkdir -p /var/cache/nginx \
-	&& mkdir -p /var/nginx \
-	&& mkdir -p /var/nginx/conf.d \
-	&& mkdir -p /var/ssl \
-	&& mkdir -p /var/www \
-	&& chown nignx:nginx /var/cache/nginx /var/nginx /var/ssl /var/www -R
+#custom
+RUN mkdir -p /nginx \
+	&& mkdir -p /nginx/etc \
+	&& mkdir -p /nginx/www \
+	&& mkdir -p /nginx/www/default \
+	&& mkdir -p /nginx/ssl \
+	&& rm /etc/nginx/nginx.conf \
+	&& touch /var/run/nginx.pid
 
-COPY ./nginx.conf /var/nginx/nginx.conf
+COPY ./source/nginx.conf /etc/nginx/nginx.conf
+COPY ./source/default.conf /nginx/etc/default.conf
+COPY ./source/index.html /nginx/www/default/index.html
 
-RUN ln -s /var/nginx/nginx.conf /etc/nginx/nginx.conf
+RUN chown nginx:nginx -R /nginx /var/run/nginx.pid
 
 STOPSIGNAL SIGTERM
 
+#debug
+RUN ls -lah /nginx/* \
+	&& ls -lah /etc/nginx/* \
+	&& id -u nginx \
+	&& id -g nginx \
+	&& cat /etc/nginx/nginx.conf
+
 # ------ define volumes ------ #
-VOLUME ["/var/nginx", "/var/ssl", "/var/www"]
+VOLUME ["/nginx/etc", "/nginx/www", "/nginx/ssl"]
 
 # ------ entrypoint for container ------ #
+USER nginx:nginx
 CMD ["nginx", "-g", "daemon off;"]

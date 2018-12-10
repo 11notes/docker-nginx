@@ -2,7 +2,7 @@
 FROM alpine:3.8
 
 # ------ original nginx docker alpine source compile! ------ #
-ENV NGINX_VERSION 1.15.5
+ENV NGINX_VERSION 1.14.2
 
 #	additional nginx modules
 ENV ADD_MODULE_HEADERS_MORE_NGINX_VERSION 0.33
@@ -28,6 +28,8 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
 		--http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp \
 		--http-scgi-temp-path=/var/cache/nginx/scgi_temp \
+		--user=nginx \
+		--group=nginx \
 		--with-http_ssl_module \
 		--with-http_realip_module \
 		--with-http_addition_module \
@@ -58,6 +60,8 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		--with-http_v2_module \
 		--add-module=/usr/lib/nginx/modules/headers-more-nginx-module-$ADD_MODULE_HEADERS_MORE_NGINX_VERSION \
 	" \
+	&& addgroup --gid 1000 -S nginx \
+	&& adduser --uid 1000 -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \
 	&& apk add --no-cache --virtual .build-deps \
 		gcc \
 		libc-dev \
@@ -67,7 +71,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		zlib-dev \
 		linux-headers \
 		curl \
-		gnupg \
+		gnupg1 \
 		libxslt-dev \
 		gd-dev \
 		geoip-dev \
@@ -116,6 +120,10 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& strip /usr/lib/nginx/modules/*.so \
 	&& rm -rf /usr/src/nginx-$NGINX_VERSION \
 	\
+	# Bring in gettext so we can get `envsubst`, then throw
+	# the rest away. To do this, we need to install `gettext`
+	# then move `envsubst` out of the way so `gettext` can
+	# be deleted completely, then move `envsubst` back.
 	&& apk add --no-cache --virtual .gettext gettext \
 	&& mv /usr/bin/envsubst /tmp/ \
 	\
@@ -130,26 +138,42 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& apk del .gettext \
 	&& mv /tmp/envsubst /usr/local/bin/ \
 	\
+	# Bring in tzdata so users could set the timezones through the environment
+	# variables
 	&& apk add --no-cache tzdata \
 	\
+	# forward request and error logs to docker log collector
 	&& ln -sf /dev/stdout /var/log/nginx/access.log \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log
 
-RUN rm /etc/nginx/nginx.conf \
-	&& mkdir -p /var/cache/nginx \
-	&& mkdir -p /var/nginx \
-	&& mkdir -p /var/nginx/conf.d \
-	&& mkdir -p /var/ssl \
-	&& mkdir -p /var/www
 
-COPY ./nginx.conf /var/nginx/nginx.conf
+#custom
+RUN mkdir -p /nginx \
+	&& mkdir -p /nginx/etc \
+	&& mkdir -p /nginx/www \
+	&& mkdir -p /nginx/www/default \
+	&& mkdir -p /nginx/ssl \
+	&& rm /etc/nginx/nginx.conf \
+	&& touch /var/run/nginx.pid
 
-RUN ln -s /var/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY ./source/nginx.conf /etc/nginx/nginx.conf
+COPY ./source/default.conf /nginx/etc/default.conf
+COPY ./source/index.html /nginx/www/default/index.html
+
+RUN chown nginx:nginx -R /nginx /var/run/nginx.pid
 
 STOPSIGNAL SIGTERM
 
+#debug
+RUN ls -lah /nginx/* \
+	&& ls -lah /etc/nginx/* \
+	&& id -u nginx \
+	&& id -g nginx \
+	&& cat /etc/nginx/nginx.conf
+
 # ------ define volumes ------ #
-VOLUME ["/var/nginx", "/var/ssl", "/var/www"]
+VOLUME ["/nginx/etc", "/nginx/www", "/nginx/ssl"]
 
 # ------ entrypoint for container ------ #
+USER nginx:nginx
 CMD ["nginx", "-g", "daemon off;"]

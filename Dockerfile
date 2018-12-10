@@ -2,7 +2,7 @@
 FROM alpine:3.8
 
 # ------ original nginx docker alpine source compile! ------ #
-ENV NGINX_VERSION 1.14.2
+ENV NGINX_VERSION 1.15.7
 
 #	additional nginx modules
 ENV ADD_MODULE_HEADERS_MORE_NGINX_VERSION 0.33
@@ -12,7 +12,7 @@ RUN apk add --no-cache --virtual .module_headers_more curl tar \
 	&& mkdir -p /usr/lib/nginx/modules \
 	&& curl -SL https://github.com/openresty/headers-more-nginx-module/archive/v$ADD_MODULE_HEADERS_MORE_NGINX_VERSION.tar.gz | tar -zxC /usr/lib/nginx/modules \
 	&& apk del .module_headers_more
-
+	
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& CONFIG="\
 		--prefix=/etc/nginx \
@@ -145,7 +145,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	# forward request and error logs to docker log collector
 	&& ln -sf /dev/stdout /var/log/nginx/access.log \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log
-
 
 #custom
 RUN mkdir -p /nginx \

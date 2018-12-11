@@ -23,6 +23,7 @@ docker build -t YOURNAME/YOURCONTAINER:YOURTAG .
 ## docker run
 ```shell
 docker run --name nginx \
+    -u 1000:1000 \
     -v volume-etc:/nginx/etc \
     -v volume-www:/nginx/www \
     -v volume-ssl:/nginx/ssl:ro \

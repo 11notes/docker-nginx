@@ -1,18 +1,16 @@
-# ------ Header ------ #
-FROM alpine:3.8
+# :: Header
+FROM alpine:3.9
 
-# ------ original nginx docker alpine source compile! ------ #
-ENV NGINX_VERSION 1.15.7
-
-#	additional nginx modules
+# :: Variables
+ENV NGINX_VERSION 1.15.8
 ENV ADD_MODULE_HEADERS_MORE_NGINX_VERSION 0.33
 
-#	additional module: headers-more
+# :: Run
 RUN apk add --no-cache --virtual .module_headers_more curl tar \
 	&& mkdir -p /usr/lib/nginx/modules \
 	&& curl -SL https://github.com/openresty/headers-more-nginx-module/archive/v$ADD_MODULE_HEADERS_MORE_NGINX_VERSION.tar.gz | tar -zxC /usr/lib/nginx/modules \
 	&& apk del .module_headers_more
-	
+
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& CONFIG="\
 		--prefix=/etc/nginx \
@@ -146,7 +144,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& ln -sf /dev/stdout /var/log/nginx/access.log \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log
 
-#custom
+
 RUN mkdir -p /nginx \
 	&& mkdir -p /nginx/etc \
 	&& mkdir -p /nginx/www \
@@ -159,20 +157,14 @@ COPY ./source/nginx.conf /etc/nginx/nginx.conf
 COPY ./source/default.conf /nginx/etc/default.conf
 COPY ./source/index.html /nginx/www/default/index.html
 
+# :: docker -u 1000:1000 (no root initiative)
 RUN chown nginx:nginx -R /nginx /var/run/nginx.pid
 
 STOPSIGNAL SIGTERM
 
-#debug
-RUN ls -lah /nginx/* \
-	&& ls -lah /etc/nginx/* \
-	&& id -u nginx \
-	&& id -g nginx \
-	&& cat /etc/nginx/nginx.conf
-
-# ------ define volumes ------ #
+# :: Volumes
 VOLUME ["/nginx/etc", "/nginx/www", "/nginx/ssl"]
 
-# ------ entrypoint for container ------ #
-USER nginx:nginx
+# :: Start
+USER nginx
 CMD ["nginx", "-g", "daemon off;"]

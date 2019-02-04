@@ -1,36 +1,31 @@
 # docker-nginx
 
-Dockerfile to create and run your own nginx process inside an alpine docker container.
+Dockerfile to create and run your own nginx process inside an alpine docker container. Nginx is compiled from source and currently has one added optional module.
 
-## docker volumes
+## Volumes
 
 /nginx/etc
 
-Contains: vhost for nginx. Must end in *.conf (set in /etc/nginx/nginx.conf)
+Purpose: vHost config, must end in *.conf (set in /etc/nginx/nginx.conf)
 
 /nginx/www
 
-Contains: webroot for vhost etc
+Purpose: Webroot for vHost
 
 /nginx/ssl
 
-Contains: SSL certificates, ment as read only for web workes from a central ssl store
+Purpose: SSL certificate directory
 
-## docker build
-```shell
-docker build -t YOURNAME/YOURCONTAINER:YOURTAG .
-```
-## docker run
+## Run
 ```shell
 docker run --name nginx \
-    -u 1000:1000 \
     -v volume-etc:/nginx/etc \
     -v volume-www:/nginx/www \
     -v volume-ssl:/nginx/ssl:ro \
     -d 11notes/nginx:latest
 ```
 
-## difference between official container
+## difference between official docker images
 
 Additional plugins:
 
@@ -38,19 +33,22 @@ Additional plugins:
     module_headers_more
 ```
 
-Nginx configuration and uid/gid:
+Nginx configuration:
 
 ```shell
-    uid:gid both set to static 1000:1000
-    all data moved to /nginx
+    all data moved to /nginx (in compiler!)
 ```
 
-## build with
+## Docker -u 1000:1000 (no root initiative)
 
-* [alpine](https://github.com/gliderlabs/docker-alpine) - alpine linux
-* [nginx](https://github.com/nginxinc/docker-nginx) - official docker images
+As part to make containers more secure, this container will not run as root, but as uid:gid 1000:1000. Therefore the default TCP port 80 was changed to 8080 (/source/default.conf).
 
-## tips
+## Build with
 
-* Don't bind to ports < 1024 (requires root)
-* [alpine-docker-netshare](https://github.com/11notes/alpine-docker-netshare) - Examples to store persistent storage on NFS/CIFS/etc
+* [Alpine Linux](https://alpinelinux.org/) - Alpine Linux
+* [nginx](https://github.com/nginxinc/docker-nginx) - Nginx
+
+## Tips
+
+* Don't bind to ports < 1024 (requires root), use NAT
+* [Permanent Storge with NFS/CIFS/...](https://github.com/11notes/alpine-docker-netshare) - Module to store permanent container data via NFS/CIFS/...

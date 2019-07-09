@@ -22,7 +22,7 @@ docker run --name nginx \
     -v volume-etc:/nginx/etc \
     -v volume-www:/nginx/www \
     -v volume-ssl:/nginx/ssl:ro \
-    -d 11notes/nginx:latest
+    -d 11notes/nginx:[tag]
 ```
 
 ## difference between official docker images

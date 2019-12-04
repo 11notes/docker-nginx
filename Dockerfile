@@ -1,8 +1,8 @@
 # :: Header
-FROM alpine:3.9
+FROM alpine:3.10
 
 # :: Variables
-ENV NGINX_VERSION 1.17.1
+ENV NGINX_VERSION 1.16.1
 ENV ADD_MODULE_HEADERS_MORE_NGINX_VERSION 0.33
 
 # :: Run

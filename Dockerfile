@@ -19,13 +19,13 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		--conf-path=/etc/nginx/nginx.conf \
 		--error-log-path=/var/log/nginx/error.log \
 		--http-log-path=/var/log/nginx/access.log \
-		--pid-path=/var/run/nginx.pid \
-		--lock-path=/var/run/nginx.lock \
-		--http-client-body-temp-path=/var/cache/nginx/client_temp \
-		--http-proxy-temp-path=/var/cache/nginx/proxy_temp \
-		--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
-		--http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp \
-		--http-scgi-temp-path=/var/cache/nginx/scgi_temp \
+		--pid-path=/nginx/run/nginx.pid \
+		--lock-path=/nginx/run/nginx.lock \
+		--http-client-body-temp-path=/nginx/cache/client_temp \
+		--http-proxy-temp-path=/nginx/cache/proxy_temp \
+		--http-fastcgi-temp-path=/nginx/cache/fastcgi_temp \
+		--http-uwsgi-temp-path=/nginx/cache/uwsgi_temp \
+		--http-scgi-temp-path=/nginx/cache/scgi_temp \
 		--user=nginx \
 		--group=nginx \
 		--with-http_ssl_module \
@@ -59,8 +59,8 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		--add-module=/usr/lib/nginx/modules/headers-more-nginx-module-$ADD_MODULE_HEADERS_MORE_NGINX_VERSION \
 	" \
 	&& addgroup --gid 1000 -S nginx \
-	&& adduser --uid 1000 -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \
-	&& apk add --no-cache --virtual .build-deps \
+	&& adduser --uid 1000 -D -S -h /nginx -s /sbin/nologin -G nginx nginx \
+	&& apk add --no-cache --virtual .tools \
 		gcc \
 		libc-dev \
 		make \
@@ -132,7 +132,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 			| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
 	)" \
 	&& apk add --no-cache --virtual .nginx-rundeps $runDeps \
-	&& apk del .build-deps \
+	&& apk del .tools \
 	&& apk del .gettext \
 	&& mv /tmp/envsubst /usr/local/bin/ \
 	\
@@ -146,19 +146,20 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 
 
 RUN mkdir -p /nginx \
+	&& mkdir -p /nginx/run \
+	&& mkdir -p /nginx/cache \
 	&& mkdir -p /nginx/etc \
 	&& mkdir -p /nginx/www \
 	&& mkdir -p /nginx/www/default \
 	&& mkdir -p /nginx/ssl \
-	&& rm /etc/nginx/nginx.conf \
-	&& touch /var/run/nginx.pid
+	&& rm /etc/nginx/nginx.conf
 
 COPY ./source/nginx.conf /etc/nginx/nginx.conf
 COPY ./source/default.conf /nginx/etc/default.conf
 COPY ./source/index.html /nginx/www/default/index.html
 
 # :: docker -u 1000:1000 (no root initiative)
-RUN chown nginx:nginx -R /nginx /var/run/nginx.pid
+RUN chown nginx:nginx -R /nginx
 
 STOPSIGNAL SIGTERM
 

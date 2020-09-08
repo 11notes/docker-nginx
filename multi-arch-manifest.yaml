@@ -4,7 +4,7 @@ manifests:
     platform:
       architecture: amd64
       os: linux
-  - image: 1notes/nginx:arm64v8-1.18.0
+  - image: 11notes/nginx:arm64v8-1.18.0
     platform:
       architecture: arm64
       os: linux

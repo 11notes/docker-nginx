@@ -9,3 +9,8 @@ manifests:
       architecture: arm64
       os: linux
       variant: v8
+  - image: 11notes/nginx:arm32v7-1.18.0
+    platform:
+      architecture: arm
+      os: linux
+      variant: v7

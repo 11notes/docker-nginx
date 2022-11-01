@@ -158,9 +158,8 @@
 		&& mkdir -p /nginx/ssl \
 		&& rm /etc/nginx/nginx.conf
 
-	# :: copy defaults
-		COPY ./source/etc /etc
-		COPY ./source/nginx /nginx
+	# :: copy root filesystem changes
+        COPY ./rootfs /
 
 	# :: docker -u 1000:1000 (no root initiative)
 		RUN chown nginx:nginx -R /nginx
@@ -171,5 +170,6 @@ STOPSIGNAL SIGTERM
 	VOLUME ["/nginx/etc", "/nginx/www", "/nginx/ssl"]
 
 # :: Start
+	RUN set -ex; chmod +x /usr/local/bin/entrypoint.sh
 	USER nginx
-	CMD ["nginx", "-g", "daemon off;"]
+	ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

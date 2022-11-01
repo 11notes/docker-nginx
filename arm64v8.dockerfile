@@ -4,9 +4,9 @@
     RUN apk add curl && curl -L ${QEMU_URL} | tar zxvf - -C . && mv qemu-3.0.0+resin-aarch64/qemu-aarch64-static .
 
 # :: Header
-	FROM arm64v8/alpine:3.12
+	FROM arm64v8/alpine:3.16
     COPY --from=builder qemu-aarch64-static /usr/bin
-	ENV NGINX_VERSION 1.18.0
+	ENV NGINX_VERSION 1.22.1
 	ENV ADD_MODULE_HEADERS_MORE_NGINX_VERSION 0.33
 
 # :: Run

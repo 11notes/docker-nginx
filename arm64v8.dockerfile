@@ -5,7 +5,7 @@
 
 # :: Builder
 	FROM arm64v8/alpine:latest as nginx
-    COPY --from=builder qemu-arm-static /usr/bin
+    COPY --from=builder qemu-aarch64-static /usr/bin
 	ENV NGINX_VERSION 1.22.1
 	ENV ADD_MODULE_HEADERS_MORE_NGINX_VERSION 0.33
 
@@ -98,7 +98,7 @@
 
 # :: Header
 	FROM arm64v8/alpine:latest
-	COPY --from=builder qemu-arm-static /usr/bin
+	COPY --from=builder qemu-aarch64-static /usr/bin
 	COPY --from=nginx /usr/sbin/nginx /usr/sbin
 	COPY --from=nginx /etc/nginx/ /etc/nginx
 	COPY --from=nginx /usr/lib/nginx/modules/ /etc/nginx/modules

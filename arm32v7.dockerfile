@@ -7,7 +7,7 @@
 	FROM arm32v7/alpine:latest as nginx
     COPY --from=builder qemu-arm-static /usr/bin
 	ENV NGINX_VERSION 1.24.0
-	ENV ADD_MODULE_HEADERS_MORE_NGINX_VERSION 0.33
+	ENV ADD_MODULE_HEADERS_MORE_NGINX_VERSION 0.34
 
     RUN set -ex; \
 		CONFIG="\

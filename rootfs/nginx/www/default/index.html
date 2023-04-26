@@ -1,62 +1,61 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>11notes/nginx:stable</title>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata" />
+  <head>
+    <title>11notes/nginx:stable</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata" />
     <style>
-        html,
-        body {
-            height: 100%;
-        }
+      html,
+      body {
+        height: 100%;
+      }
 
-        body {
-            margin: 0;
-        }
+      body {
+        margin: 0;
+      }
 
 
-        .container {
-            height: 100%;
-            padding: 0;
-            margin: 0;
-            display: -webkit-box;
-            display: -moz-box;
-            display: -ms-flexbox;
-            display: -webkit-flex;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-        }
+      .container {
+        height: 100%;
+        padding: 0;
+        margin: 0;
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
 
-        .content {
-            align-self: center;
-        }
+      .content {
+        align-self: center;
+      }
 
-        .text {
-            font-size:1em; cursor:default;
-            font-family:'Inconsolata';
-        }
+      .text {
+        font-size:1em; cursor:default;
+        font-family:'Inconsolata';
+      }
 
-        .comment {
-            font-size:1em; cursor:default;
-            font-family:'Inconsolata';
-            color:darkgreen;
-            font-style:italic;
-        }
-
+      .comment {
+        font-size:1em; cursor:default;
+        font-family:'Inconsolata';
+        color:darkgreen;
+        font-style:italic;
+      }
     </style>
-    </head>
-    <body>
-            <div class="container">
-                <div class="content">
-                    <div class="text">
-                            docker run --name nginx \<br />
-                            &emsp;-v volume-etc:/nginx/etc \<br />
-                            &emsp;-v volume-www:/nginx/www \<br />
-                            &emsp;-v volume-ssl:/nginx/ssl:ro \<br />
-                            &emsp;-d 11notes/nginx:[tag]
-                    </div>
-                </div>
-            </div>
-    </body>
+  </head>
+  <body>
+    <div class="container">
+      <div class="content">
+        <div class="text">
+          docker run --name nginx \<br />
+          &emsp;-v volume-etc:/nginx/etc \<br />
+          &emsp;-v volume-www:/nginx/www \<br />
+          &emsp;-v volume-ssl:/nginx/ssl:ro \<br />
+          &emsp;-d 11notes/nginx:[tag]
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

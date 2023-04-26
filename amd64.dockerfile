@@ -1,6 +1,6 @@
 # :: Build
 	FROM alpine:latest as nginx
-	ENV NGINX_VERSION 1.22.1
+	ENV NGINX_VERSION 1.24.0
 	ENV ADD_MODULE_HEADERS_MORE_NGINX_VERSION 0.33
 
     RUN set -ex; \
@@ -100,10 +100,10 @@
 	USER root
 
 	# :: prepare
-        RUN set -ex; \
-            mkdir -p /nginx; \
-            mkdir -p /nginx/etc; \
-            mkdir -p /nginx/www; \
+    RUN set -ex; \
+      mkdir -p /nginx; \
+      mkdir -p /nginx/etc; \
+      mkdir -p /nginx/www; \
 			mkdir -p /nginx/ssl; \
 			mkdir -p /nginx/cache; \
 			mkdir -p /nginx/run;
@@ -124,7 +124,7 @@
 			adduser --uid 1000 -D -S -h /nginx -s /sbin/nologin -G nginx nginx;
 
 	# :: copy root filesystem changes
-        COPY ./rootfs /
+    COPY ./rootfs /
 
 	# :: docker -u 1000:1000 (no root initiative)
 		RUN set -ex; \
@@ -136,8 +136,8 @@
 	VOLUME ["/nginx/etc", "/nginx/www", "/nginx/ssl"]
 
 # :: Monitor
-    RUN set -ex; chmod +x /usr/local/bin/healthcheck.sh
-    HEALTHCHECK CMD /usr/local/bin/healthcheck.sh || exit 1
+  RUN set -ex; chmod +x /usr/local/bin/healthcheck.sh
+  HEALTHCHECK CMD /usr/local/bin/healthcheck.sh || exit 1
 
 # :: Start
 	RUN set -ex; chmod +x /usr/local/bin/entrypoint.sh

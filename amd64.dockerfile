@@ -1,7 +1,8 @@
 # :: Build
 	FROM alpine:latest as nginx
-	ENV NGINX_VERSION 1.24.0
-	ENV ADD_MODULE_HEADERS_MORE_NGINX_VERSION 0.34
+	ENV NGINX_VERSION=1.24.0
+	ENV MODULE_HEADERS_MORE_NGINX_VERSION=0.34
+  ENV MODULE_NTLM_VERSION=1.19.3
 
     RUN set -ex; \
 		CONFIG="\
@@ -48,7 +49,8 @@
 			--with-compat \
 			--with-file-aio \
 			--with-http_v2_module \
-			--add-module=/usr/lib/nginx/modules/headers-more-nginx-module-$ADD_MODULE_HEADERS_MORE_NGINX_VERSION \
+			--add-module=/usr/lib/nginx/modules/headers-more-nginx-module-${MODULE_HEADERS_MORE_NGINX_VERSION} \
+      --add-module=/usr/lib/nginx/modules/nginx-ntlm-module-${MODULE_NTLM_VERSION} \
 		"; \
         apk add --no-cache --update \
 			curl \
@@ -70,9 +72,10 @@
 			findutils; \
 		mkdir -p /usr/lib/nginx/modules; \
 		mkdir -p /usr/src; \
-		curl -SL https://github.com/openresty/headers-more-nginx-module/archive/v$ADD_MODULE_HEADERS_MORE_NGINX_VERSION.tar.gz | tar -zxC /usr/lib/nginx/modules; \
-		curl -SL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz | tar -zxC /usr/src; \
-		cd /usr/src/nginx-$NGINX_VERSION; \
+		curl -SL https://github.com/openresty/headers-more-nginx-module/archive/v${MODULE_HEADERS_MORE_NGINX_VERSION}.tar.gz | tar -zxC /usr/lib/nginx/modules; \
+    curl -SL https://github.com/gabihodoroaga/nginx-ntlm-module/archive/refs/tags/v${MODULE_NTLM_VERSION}.tar.gz | tar -zxC /usr/lib/nginx/modules; \
+		curl -SL https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz | tar -zxC /usr/src; \
+		cd /usr/src/nginx-${NGINX_VERSION}; \
 		./configure $CONFIG --with-debug; \
 		make -j $(nproc); \
 		mv objs/nginx objs/nginx-debug; \

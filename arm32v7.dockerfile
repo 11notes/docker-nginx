@@ -1,11 +1,11 @@
 # :: Arch
-    FROM alpine AS builder
-    ENV QEMU_URL https://github.com/balena-io/qemu/releases/download/v3.0.0%2Bresin/qemu-3.0.0+resin-arm.tar.gz
-    RUN apk add curl && curl -L ${QEMU_URL} | tar zxvf - -C . && mv qemu-3.0.0+resin-arm/qemu-arm-static .
+  FROM alpine AS qemu
+  ENV QEMU_URL https://github.com/balena-io/qemu/releases/download/v3.0.0%2Bresin/qemu-3.0.0+resin-arm.tar.gz
+  RUN apk add curl && curl -L ${QEMU_URL} | tar zxvf - -C . && mv qemu-3.0.0+resin-arm/qemu-arm-static .
 
 # :: Builder
-	FROM arm32v7/alpine:latest as nginx
-    COPY --from=builder qemu-arm-static /usr/bin
+	FROM arm32v7/alpine:latest as build
+  COPY --from=qemu qemu-arm-static /usr/bin
 	ENV NGINX_VERSION 1.24.0
 	ENV ADD_MODULE_HEADERS_MORE_NGINX_VERSION 0.34
 
@@ -97,56 +97,55 @@
 		strip /usr/lib/nginx/modules/*.so;
 
 # :: Header
-	FROM arm32v7/alpine:latest
-	COPY --from=builder qemu-arm-static /usr/bin
-	COPY --from=nginx /usr/sbin/nginx /usr/sbin
-	COPY --from=nginx /etc/nginx/ /etc/nginx
-	COPY --from=nginx /usr/lib/nginx/modules/ /etc/nginx/modules
+	FROM 11notes/alpine:arm32v7-stable
+	COPY --from=qemu qemu-arm-static /usr/bin
+	COPY --from=build /usr/sbin/nginx /usr/sbin
+	COPY --from=build /etc/nginx/ /etc/nginx
+	COPY --from=build /usr/lib/nginx/modules/ /etc/nginx/modules
 
 # :: Run
-	USER root
+  USER root
 
-	# :: prepare
-        RUN set -ex; \
-            mkdir -p /nginx; \
-            mkdir -p /nginx/etc; \
-            mkdir -p /nginx/www; \
-			mkdir -p /nginx/ssl; \
-			mkdir -p /nginx/cache; \
-			mkdir -p /nginx/run;
+  # :: prepare
+  RUN set -ex; \
+    mkdir -p /nginx; \
+    mkdir -p /nginx/etc; \
+    mkdir -p /nginx/www; \
+    mkdir -p /nginx/ssl; \
+    mkdir -p /nginx/cache; \
+    mkdir -p /nginx/run;
 
-		RUN set -ex; \
-			apk add --update --no-cache \
-				curl \
-				shadow \
-				pcre2-dev; \
-			mkdir -p /var/log/nginx; \
-			touch /var/log/nginx/access.log; \
-			touch /var/log/nginx/error.log; \
-			ln -sf /dev/stdout /var/log/nginx/access.log; \
-			ln -sf /dev/stderr /var/log/nginx/error.log;
+  RUN set -ex; \
+    apk add --update --no-cache \
+      curl \
+      pcre2-dev; \
+    mkdir -p /var/log/nginx; \
+    touch /var/log/nginx/access.log; \
+    touch /var/log/nginx/error.log; \
+    ln -sf /dev/stdout /var/log/nginx/access.log; \
+    ln -sf /dev/stderr /var/log/nginx/error.log;
 
-		RUN set -ex; \
-			addgroup --gid 1000 -S nginx; \
-			adduser --uid 1000 -D -S -h /nginx -s /sbin/nologin -G nginx nginx;
+  RUN set -ex; \
+    addgroup --gid 1000 -S nginx; \
+    adduser --uid 1000 -D -S -h /nginx -s /sbin/nologin -G nginx nginx;
 
-	# :: copy root filesystem changes
-        COPY ./rootfs /
+  # :: copy root filesystem changes
+    COPY ./rootfs /
 
-	# :: docker -u 1000:1000 (no root initiative)
-		RUN set -ex; \
-			chown nginx:nginx -R \
-				/nginx \
-				/var/log/nginx;
+  # :: docker -u 1000:1000 (no root initiative)
+    RUN set -ex; \
+      chown nginx:nginx -R \
+        /nginx \
+        /var/log/nginx;
 
 # :: Volumes
-	VOLUME ["/nginx/etc", "/nginx/www", "/nginx/ssl"]
+  VOLUME ["/nginx/etc", "/nginx/www", "/nginx/ssl"]
 
 # :: Monitor
-    RUN set -ex; chmod +x /usr/local/bin/healthcheck.sh
-    HEALTHCHECK CMD /usr/local/bin/healthcheck.sh || exit 1
+  RUN set -ex; chmod +x /usr/local/bin/healthcheck.sh
+  HEALTHCHECK CMD /usr/local/bin/healthcheck.sh || exit 1
 
 # :: Start
-	RUN set -ex; chmod +x /usr/local/bin/entrypoint.sh
-	USER nginx
-	ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+  RUN set -ex; chmod +x /usr/local/bin/entrypoint.sh
+  USER nginx
+  ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

@@ -1,4 +1,4 @@
-image: 11notes/nginx:stable
+image: 11notes/nginx:1.24.0
 manifests:
   - image: 11notes/nginx:amd64-1.24.0
     platform:

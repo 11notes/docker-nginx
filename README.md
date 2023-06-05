@@ -1,40 +1,41 @@
-# docker-nginx
-Container to run your own nginx process inside an alpine docker container. Nginx is compiled from source and currently has additional modules.
+# Alpine:: Nginx
+Run Nginx based on Alpine Linux. Small, lightweight, secure and fast.
 
 ## Volumes
-* **/nginx/etc** - vHost config, must end in *.conf (set in /etc/nginx/nginx.conf)
-* **/nginx/www** - Webroot for vHost
-* **/nginx/ssl** - SSL certificate directory
+* **/nginx/etc** - Directory of vHost config, must end in *.conf (set in /etc/nginx/nginx.conf)
+* **/nginx/www** - Directory of webroot for vHost
+* **/nginx/ssl** - Directory of SSL certificates
 
 ## Run
 ```shell
 docker run --name nginx \
-  -v /local/etc:/nginx/etc \
-  -v /local/www:/nginx/www \
-  -v /local/ssl:/nginx/ssl:ro \
+  -v .../etc:/nginx/etc \
+  -v .../www:/nginx/www \
+  -v .../ssl:/nginx/ssl:ro \
   -d 11notes/nginx:[tag]
 ```
 
-## difference between official docker images
+## Defaults
+| Parameter | Value | Description |
+| --- | --- | --- |
+| `user` | docker | user docker |
+| `uid` | 1000 | user id 1000 |
+| `gid` | 1000 | group id 1000 |
+
+## Delta
 Additional plugins:
 
 ```shell
   module_headers_more
 ```
 
-Nginx configuration:
-```shell
-  all data moved to /nginx (in compiler!)
-```
-
-## Docker -u 1000:1000 (no root initiative)
-As part to make containers more secure, this container will not run as root, but as uid:gid 1000:1000. Therefore the default TCP port 80 was changed to 8080.
+## Parent
+* [11notes/alpine:stable](https://github.com/11notes/docker-alpine)
 
 ## Built with
-* [Alpine Linux](https://alpinelinux.org/) - Offical Parent Container
-* [nginx](https://nginx.org/) - Nginx
+* [nginx](https://nginx.org/)
+* [Alpine Linux](https://alpinelinux.org/)
 
 ## Tips
-
-* Don't bind to ports < 1024 (requires root), use NAT
-* [Permanent Storge with NFS/CIFS/...](https://github.com/11notes/alpine-docker-netshare) - Module to store permanent container data via NFS/CIFS/...
+* Don't bind to ports < 1024 (requires root), use NAT/reverse proxy
+* [Permanent Stroage](https://github.com/11notes/alpine-docker-netshare) - Module to store permanent container data via NFS/CIFS and more

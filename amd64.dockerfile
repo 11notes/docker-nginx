@@ -18,8 +18,8 @@
       --http-fastcgi-temp-path=/nginx/cache/fastcgi_temp \
       --http-uwsgi-temp-path=/nginx/cache/uwsgi_temp \
       --http-scgi-temp-path=/nginx/cache/scgi_temp \
-      --user=nginx \
-      --group=nginx \
+      --user=docker \
+      --group=docker \
       --with-http_ssl_module \
       --with-http_realip_module \
       --with-http_addition_module \
@@ -100,38 +100,36 @@
 # :: Run
   USER root
 
-  # :: prepare
-  RUN set -ex; \
-    mkdir -p /nginx; \
-    mkdir -p /nginx/etc; \
-    mkdir -p /nginx/www; \
-    mkdir -p /nginx/ssl; \
-    mkdir -p /nginx/cache; \
-    mkdir -p /nginx/run; \
-    mkdir -p /var/log/nginx;
+  # :: update image
+    RUN set -ex; \
+      apk update; \
+      apk upgrade; \
+      apk add --update --no-cache \
+        pcre2-dev;
 
-  RUN set -ex; \
-    apk add --update --no-cache \
-      curl \
-      pcre2-dev; \
-    apk upgrade; \
-    touch /var/log/nginx/access.log; \
-    touch /var/log/nginx/error.log; \
-    ln -sf /dev/stdout /var/log/nginx/access.log; \
-    ln -sf /dev/stderr /var/log/nginx/error.log;
+  # :: prepare image
+    RUN set -ex; \
+      mkdir -p /nginx; \
+      mkdir -p /nginx/etc; \
+      mkdir -p /nginx/www; \
+      mkdir -p /nginx/ssl; \
+      mkdir -p /nginx/cache; \
+      mkdir -p /nginx/run; \
+      mkdir -p /var/log/nginx; \
+      touch /var/log/nginx/access.log; \
+      touch /var/log/nginx/error.log; \
+      ln -sf /dev/stdout /var/log/nginx/access.log; \
+      ln -sf /dev/stderr /var/log/nginx/error.log;    
 
-  RUN set -ex; \
-    addgroup --gid 1000 -S nginx; \
-    adduser --uid 1000 -D -S -h /nginx -s /sbin/nologin -G nginx nginx;
-
-   # :: copy root filesystem changes
+   # :: copy root filesystem changes and add execution rights to init scripts
     COPY ./rootfs /
     RUN set -ex; \
-      chmod +x -R /usr/local/bin;
+      chmod +x -R /usr/local/bin
 
-  # :: docker -u 1000:1000 (no root initiative)
+  # :: change home path for existing user and set correct permission
     RUN set -ex; \
-      chown nginx:nginx -R \
+      usermod -d /nginx docker; \
+      chown -R 1000:1000 \
         /nginx \
         /var/log/nginx;
 
@@ -142,5 +140,5 @@
   HEALTHCHECK CMD /usr/local/bin/healthcheck.sh || exit 1
 
 # :: Start
-  USER nginx
+  USER docker
   ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

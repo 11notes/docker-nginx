@@ -1,4 +1,4 @@
-# Alpine:: Nginx
+# Alpine :: Nginx
 Run Nginx based on Alpine Linux. Small, lightweight, secure and fast.
 
 ## Volumes

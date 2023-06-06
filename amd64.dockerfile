@@ -121,7 +121,7 @@
       ln -sf /dev/stdout /var/log/nginx/access.log; \
       ln -sf /dev/stderr /var/log/nginx/error.log;    
 
-   # :: copy root filesystem changes and add execution rights to init scripts
+  # :: copy root filesystem changes and add execution rights to init scripts
     COPY ./rootfs /
     RUN set -ex; \
       chmod +x -R /usr/local/bin

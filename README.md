@@ -1,5 +1,5 @@
 # Alpine :: Nginx
-Run Nginx based on Alpine Linux. Small, lightweight, secure and fast.
+Run Nginx based on Alpine Linux. Small, lightweight, secure and fast 🏔️
 
 ## Volumes
 * **/nginx/etc** - Directory of vHost config, must end in *.conf (set in /etc/nginx/nginx.conf)
@@ -37,5 +37,6 @@ Additional plugins:
 * [Alpine Linux](https://alpinelinux.org/)
 
 ## Tips
+* You can find some [examples](examples) of special backend configurations
 * Don't bind to ports < 1024 (requires root), use NAT/reverse proxy
 * [Permanent Stroage](https://github.com/11notes/alpine-docker-netshare) - Module to store permanent container data via NFS/CIFS and more

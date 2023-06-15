@@ -22,6 +22,14 @@ docker run --name nginx \
 | `uid` | 1000 | user id 1000 |
 | `gid` | 1000 | group id 1000 |
 
+## Environment
+| Parameter | Value |Default |
+| --- | --- | --- |
+| `HEALTHCHECK_PROTO` | http or https | http |
+| `HEALTHCHECK_HOST` | localhost or 127.0.0.1 or a dedicated IP | localhost |
+| `HEALTHCHECK_PORT` | any TCP port | 8080 |
+| `HEALTHCHECK_URL` | any URL, must start with / | / |
+
 ## Delta
 Additional plugins:
 
@@ -33,8 +41,8 @@ Additional plugins:
 * [11notes/alpine:stable](https://github.com/11notes/docker-alpine)
 
 ## Built with
-* [nginx](https://nginx.org/)
-* [Alpine Linux](https://alpinelinux.org/)
+* [nginx](https://nginx.org)
+* [Alpine Linux](https://alpinelinux.org)
 
 ## Tips
 * You can find some [examples](examples) of special backend configurations

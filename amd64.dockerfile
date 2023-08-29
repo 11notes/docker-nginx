@@ -102,10 +102,9 @@
 
   # :: update image
     RUN set -ex; \
-      apk update; \
-      apk upgrade; \
-      apk add --update --no-cache \
-        pcre2-dev;
+      apk add --no-cache \
+        pcre2-dev; \
+      apk --no-cache upgrade;
 
   # :: prepare image
     RUN set -ex; \

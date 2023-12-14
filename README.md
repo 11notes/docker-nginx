@@ -1,5 +1,5 @@
 # Alpine :: Nginx
-![size](https://img.shields.io/docker/image-size/11notes/nginx/2.6.0?color=0eb305) ![version](https://img.shields.io/docker/v/11notes/nginx?color=eb7a09) ![pulls](https://img.shields.io/docker/pulls/11notes/nginx?color=2b75d6) ![activity](https://img.shields.io/github/commit-activity/m/11notes/docker-nginx?color=c91cb8) ![commit-last](https://img.shields.io/github/last-commit/11notes/docker-nginx?color=c91cb8)
+![size](https://img.shields.io/docker/image-size/11notes/nginx/1.24.0?color=0eb305) ![version](https://img.shields.io/docker/v/11notes/nginx?color=eb7a09) ![pulls](https://img.shields.io/docker/pulls/11notes/nginx?color=2b75d6) ![activity](https://img.shields.io/github/commit-activity/m/11notes/docker-nginx?color=c91cb8) ![commit-last](https://img.shields.io/github/last-commit/11notes/docker-nginx?color=c91cb8)
 
 Run Nginx based on Alpine Linux. Small, lightweight, secure and fast 🏔️
 
@@ -28,7 +28,7 @@ docker run --name nginx \
 ## Environment
 | Parameter | Value | Default |
 | --- | --- | --- |
-| `HEALTHCHECK_URL` | URL to check for health of conatiner | https://localhost:8443/ping |
+| `HEALTHCHECK_URL` | URL to check for health of container | https://localhost:8443/ping |
 
 ## Delta
 Additional plugins:

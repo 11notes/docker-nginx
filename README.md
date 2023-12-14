@@ -1,4 +1,6 @@
 # Alpine :: Nginx
+![size](https://img.shields.io/docker/image-size/11notes/nginx/2.6.0?color=0eb305) ![version](https://img.shields.io/docker/v/11notes/nginx?color=eb7a09) ![pulls](https://img.shields.io/docker/pulls/11notes/nginx?color=2b75d6) ![activity](https://img.shields.io/github/commit-activity/m/11notes/docker-nginx?color=c91cb8) ![commit-last](https://img.shields.io/github/last-commit/11notes/docker-nginx?color=c91cb8)
+
 Run Nginx based on Alpine Linux. Small, lightweight, secure and fast 🏔️
 
 ## Volumes
@@ -21,14 +23,12 @@ docker run --name nginx \
 | `user` | docker | user docker |
 | `uid` | 1000 | user id 1000 |
 | `gid` | 1000 | group id 1000 |
+| `home` | /nginx | home directory of user docker |
 
 ## Environment
-| Parameter | Value |Default |
+| Parameter | Value | Default |
 | --- | --- | --- |
-| `HEALTHCHECK_PROTO` | http or https | http |
-| `HEALTHCHECK_HOST` | localhost or 127.0.0.1 or a dedicated IP | localhost |
-| `HEALTHCHECK_PORT` | any TCP port | 8080 |
-| `HEALTHCHECK_URL` | any URL, must start with / | / |
+| `HEALTHCHECK_URL` | URL to check for health of conatiner | https://localhost:8443/ping |
 
 ## Delta
 Additional plugins:
@@ -37,14 +37,13 @@ Additional plugins:
   module_headers_more
 ```
 
-## Parent
+## Parent image
 * [11notes/alpine:stable](https://github.com/11notes/docker-alpine)
 
-## Built with
+## Built with and thanks to
 * [nginx](https://nginx.org)
 * [Alpine Linux](https://alpinelinux.org)
 
 ## Tips
-* You can find some [examples](examples) of special backend configurations
-* Don't bind to ports < 1024 (requires root), use NAT/reverse proxy
-* [Permanent Stroage](https://github.com/11notes/alpine-docker-netshare) - Module to store permanent container data via NFS/CIFS and more
+* Only use rootless container runtime (podman, rootless docker)
+* Don't bind to ports < 1024 (requires root), use NAT/reverse proxy (haproxy, traefik, nginx)

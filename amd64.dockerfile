@@ -1,6 +1,6 @@
 # :: Build
   FROM alpine:latest as build
-  ENV NGINX_VERSION=1.24.0
+  ENV APP_VERSION=1.24.0
   ENV MODULE_HEADERS_MORE_NGINX_VERSION=0.34
 
   RUN set -ex; \
@@ -72,8 +72,8 @@
     mkdir -p /usr/lib/nginx/modules; \
     mkdir -p /usr/src; \
     curl -SL https://github.com/openresty/headers-more-nginx-module/archive/v${MODULE_HEADERS_MORE_NGINX_VERSION}.tar.gz | tar -zxC /usr/lib/nginx/modules; \
-    curl -SL https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz | tar -zxC /usr/src; \
-    cd /usr/src/nginx-${NGINX_VERSION}; \
+    curl -SL https://nginx.org/download/nginx-${APP_VERSION}.tar.gz | tar -zxC /usr/src; \
+    cd /usr/src/nginx-${APP_VERSION}; \
     ./configure $CONFIG --with-debug; \
     make -j $(nproc); \
     mv objs/nginx objs/nginx-debug; \
@@ -93,6 +93,8 @@
 
 # :: Header
   FROM 11notes/alpine:stable
+  ENV APP_NAME=nginx
+  ENV APP_ROOT=/nginx
   COPY --from=build /usr/sbin/nginx /usr/sbin
   COPY --from=build /etc/nginx/ /etc/nginx
   COPY --from=build /usr/lib/nginx/modules/ /etc/nginx/modules
@@ -103,17 +105,18 @@
   # :: update image
     RUN set -ex; \
       apk add --no-cache \
+        openssl \
         pcre2-dev; \
       apk --no-cache upgrade;
 
   # :: prepare image
     RUN set -ex; \
-      mkdir -p /nginx; \
-      mkdir -p /nginx/etc; \
-      mkdir -p /nginx/www; \
-      mkdir -p /nginx/ssl; \
-      mkdir -p /nginx/cache; \
-      mkdir -p /nginx/run; \
+      mkdir -p ${APP_ROOT}; \
+      mkdir -p ${APP_ROOT}/etc; \
+      mkdir -p ${APP_ROOT}/www; \
+      mkdir -p ${APP_ROOT}/ssl; \
+      mkdir -p ${APP_ROOT}/cache; \
+      mkdir -p ${APP_ROOT}/run; \
       mkdir -p /var/log/nginx; \
       touch /var/log/nginx/access.log; \
       touch /var/log/nginx/error.log; \
@@ -127,13 +130,13 @@
 
   # :: change home path for existing user and set correct permission
     RUN set -ex; \
-      usermod -d /nginx docker; \
+      usermod -d ${APP_ROOT} docker; \
       chown -R 1000:1000 \
-        /nginx \
+        ${APP_ROOT} \
         /var/log/nginx;
 
 # :: Volumes
-  VOLUME ["/nginx/etc", "/nginx/www", "/nginx/ssl"]
+  VOLUME ["${APP_ROOT}/etc", "${APP_ROOT}/www", "${APP_ROOT}/ssl"]
 
 # :: Monitor
   HEALTHCHECK CMD /usr/local/bin/healthcheck.sh || exit 1

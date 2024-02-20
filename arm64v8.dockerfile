@@ -1,5 +1,9 @@
+# :: QEMU
+  FROM multiarch/qemu-user-static:x86_64-aarch64 as qemu
+
 # :: Build
-  FROM alpine:latest as build
+  FROM alpine:arm64v8-stable as build
+  COPY --from=qemu /usr/bin/qemu-aarch64-static /usr/bin
   ENV BUILD_VERSION=1.24.0
   ENV MODULE_HEADERS_MORE_NGINX_VERSION=0.34
 
@@ -92,7 +96,8 @@
     strip /usr/lib/nginx/modules/*.so;
 
 # :: Header
-  FROM 11notes/alpine:stable
+  FROM 11notes/alpine:arm64v8-stable
+  COPY --from=qemu /usr/bin/qemu-aarch64-static /usr/bin
   COPY --from=build /usr/sbin/nginx /usr/sbin
   COPY --from=build /etc/nginx/ /etc/nginx
   COPY --from=build /usr/lib/nginx/modules/ /etc/nginx/modules

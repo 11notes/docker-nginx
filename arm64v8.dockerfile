@@ -1,10 +1,18 @@
 # :: QEMU
   FROM multiarch/qemu-user-static:x86_64-aarch64 as qemu
 
+# :: Util
+  FROM alpine as util
+
+  RUN set -ex; \
+    apk add --no-cache \
+      git; \
+    git clone https://github.com/11notes/util.git;
+
 # :: Build
   FROM arm64v8/alpine as build
   COPY --from=qemu /usr/bin/qemu-aarch64-static /usr/bin
-  ENV BUILD_VERSION=1.24.0
+  ENV BUILD_VERSION=1.26.0
   ENV MODULE_HEADERS_MORE_NGINX_VERSION=0.34
 
   RUN set -ex; \
@@ -98,6 +106,7 @@
 # :: Header
   FROM 11notes/alpine:arm64v8-stable
   COPY --from=qemu /usr/bin/qemu-aarch64-static /usr/bin
+  COPY --from=util /util/linux/shell/elevenLogJSON /usr/local/bin
   COPY --from=build /usr/sbin/nginx /usr/sbin
   COPY --from=build /etc/nginx/ /etc/nginx
   COPY --from=build /usr/lib/nginx/modules/ /etc/nginx/modules

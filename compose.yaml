@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  nginx:
+    image: "11notes/nginx:1.26.0"
+    container_name: "nginx"
+    environment:
+      TZ: Europe/Zurich
+    ports:
+      - "8443:8443/tcp"
+    volumes:
+      - "etc:/nginx/etc"
+      - "www:/nginx/www"
+      - "ssl:/nginx/ssl"
+    networks:
+      - nginx
+    restart: always
+volumes:
+  etc:
+  www:
+  ssl:
+networks:
+  nginx:

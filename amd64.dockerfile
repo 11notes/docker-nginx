@@ -1,6 +1,15 @@
+# :: Util
+  FROM alpine as util
+
+  RUN set -ex; \
+    apk add --no-cache \
+      git; \
+    git clone https://github.com/11notes/util.git;
+
+
 # :: Build
   FROM alpine:latest as build
-  ENV BUILD_VERSION=1.24.0
+  ENV BUILD_VERSION=1.26.0
   ENV MODULE_HEADERS_MORE_NGINX_VERSION=0.34
 
   RUN set -ex; \
@@ -93,6 +102,7 @@
 
 # :: Header
   FROM 11notes/alpine:stable
+  COPY --from=util /util/linux/shell/elevenLogJSON /usr/local/bin
   COPY --from=build /usr/sbin/nginx /usr/sbin
   COPY --from=build /etc/nginx/ /etc/nginx
   COPY --from=build /usr/lib/nginx/modules/ /etc/nginx/modules

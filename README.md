@@ -15,7 +15,6 @@ What can I do with this? This image will serve as a base for nginx related image
 
 # COMPOSE
 ```yaml
-version: "3.8"
 services:
   nginx:
     image: "11notes/nginx:1.26.0"

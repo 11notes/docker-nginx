@@ -1,6 +1,6 @@
 services:
   nginx:
-    image: "11notes/nginx:1.26.0"
+    image: "11notes/nginx:1.26.1"
     container_name: "nginx"
     environment:
       TZ: Europe/Zurich

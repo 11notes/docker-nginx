@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   nginx:
     image: "11notes/nginx:1.26.0"

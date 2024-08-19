@@ -9,7 +9,7 @@
 
 # :: Build
   FROM alpine:latest as build
-  ENV BUILD_VERSION=1.26.0
+  ENV BUILD_VERSION=1.26.1
   ENV MODULE_HEADERS_MORE_NGINX_VERSION=0.34
 
   RUN set -ex; \

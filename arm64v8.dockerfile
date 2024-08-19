@@ -12,7 +12,7 @@
 # :: Build
   FROM arm64v8/alpine as build
   COPY --from=qemu /usr/bin/qemu-aarch64-static /usr/bin
-  ENV BUILD_VERSION=1.26.0
+  ENV BUILD_VERSION=1.26.1
   ENV MODULE_HEADERS_MORE_NGINX_VERSION=0.34
 
   RUN set -ex; \

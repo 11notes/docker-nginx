@@ -1,3 +1,5 @@
-.gitignore
+.git*
 *.md
 LICENSE
+maintain/
+project*

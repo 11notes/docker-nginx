@@ -1,7 +1,7 @@
 ![Banner](https://github.com/11notes/defaults/blob/main/static/img/banner.png?raw=true)
 
 # 🏔️ Alpine - Nginx
-![size](https://img.shields.io/docker/image-size/11notes/nginx/1.26.1?color=0eb305) ![version](https://img.shields.io/docker/v/11notes/nginx/1.26.1?color=eb7a09) ![pulls](https://img.shields.io/docker/pulls/11notes/nginx?color=2b75d6) ![stars](https://img.shields.io/docker/stars/11notes/nginx?color=e6a50e) [<img src="https://img.shields.io/badge/github-11notes-blue?logo=github">](https://github.com/11notes)
+![size](https://img.shields.io/docker/image-size/11notes/nginx/1.26.2?color=0eb305) ![version](https://img.shields.io/docker/v/11notes/nginx/1.26.2?color=eb7a09) ![pulls](https://img.shields.io/docker/pulls/11notes/nginx?color=2b75d6) ![stars](https://img.shields.io/docker/stars/11notes/nginx?color=e6a50e) [<img src="https://img.shields.io/badge/github-11notes-blue?logo=github">](https://github.com/11notes)
 
 **Nginx base image with additional plugins and custom compiled**
 
@@ -17,7 +17,7 @@ What can I do with this? This image will serve as a base for nginx related image
 ```yaml
 services:
   nginx:
-    image: "11notes/nginx:1.26.0"
+    image: "11notes/nginx:1.26.2"
     container_name: "nginx"
     environment:
       TZ: Europe/Zurich
@@ -60,7 +60,6 @@ networks:
 * [alpine](https://alpinelinux.org)
 
 # TIPS
-* Allow non-root ports < 1024 via `echo "net.ipv4.ip_unprivileged_port_start={n}" > /etc/sysctl.d/ports.conf`
 * Use a reverse proxy like Traefik, Nginx to terminate TLS with a valid certificate
 * Use Let’s Encrypt certificates to protect your SSL endpoints
 

@@ -12,8 +12,8 @@
 # :: Build
   FROM arm64v8/alpine as build
   COPY --from=qemu /usr/bin/qemu-aarch64-static /usr/bin
-  ENV BUILD_VERSION=1.26.1
-  ENV MODULE_HEADERS_MORE_NGINX_VERSION=0.34
+  ENV BUILD_VERSION=1.26.2
+  ENV MODULE_HEADERS_MORE_NGINX_VERSION=0.37
 
   RUN set -ex; \
     CONFIG="\
@@ -104,7 +104,7 @@
     strip /usr/lib/nginx/modules/*.so;
 
 # :: Header
-  FROM 11notes/alpine:arm64v8-stable
+  FROM --platform=linux/arm64 11notes/alpine:stable
   COPY --from=qemu /usr/bin/qemu-aarch64-static /usr/bin
   COPY --from=util /util/linux/shell/elevenLogJSON /usr/local/bin
   COPY --from=build /usr/sbin/nginx /usr/sbin
@@ -153,7 +153,7 @@
   VOLUME ["${APP_ROOT}/etc", "${APP_ROOT}/www", "${APP_ROOT}/ssl"]
 
 # :: Monitor
-  HEALTHCHECK CMD /usr/local/bin/healthcheck.sh || exit 1
+  HEALTHCHECK --interval=5s --timeout=2s CMD /usr/local/bin/healthcheck.sh || exit 1
 
 # :: Start
   USER docker

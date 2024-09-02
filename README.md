@@ -51,6 +51,8 @@ networks:
 | --- | --- | --- |
 | `TZ` | [Time Zone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) | |
 | `DEBUG` | Show debug information | |
+| `NGINX_DYNAMIC_RELOAD` | Enable reload of nginx on configuration changes in /nginx/etc (only on successful configuration test!) | |
+
 
 # PARENT IMAGE
 * [11notes/alpine:stable](https://hub.docker.com/r/11notes/alpine)

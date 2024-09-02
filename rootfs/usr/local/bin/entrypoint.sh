@@ -8,6 +8,11 @@
   fi
 
   if [ -z "${1}" ]; then
+    if [ ! -z ${NGINX_DYNAMIC_RELOA} ]; then
+      elevenLogJSON info "enable dynamic reload"
+      /sbin/inotifyd /usr/local/bin/io.sh /nginx/etc:cdnym &
+    fi
+
     elevenLogJSON info "starting ${APP_NAME}"
     set -- "nginx" \
       -g \

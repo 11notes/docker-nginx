@@ -115,6 +115,7 @@
   # :: update image
     RUN set -ex; \
       apk add --no-cache \
+        inotify-tools \
         openssl \
         pcre2-dev; \
       apk --no-cache upgrade;

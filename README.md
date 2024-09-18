@@ -1,7 +1,7 @@
 ![Banner](https://github.com/11notes/defaults/blob/main/static/img/banner.png?raw=true)
 
 # 🏔️ Alpine - Nginx
-![size](https://img.shields.io/docker/image-size/11notes/nginx/1.26.2?color=0eb305) ![version](https://img.shields.io/docker/v/11notes/nginx/1.26.2?color=eb7a09) ![pulls](https://img.shields.io/docker/pulls/11notes/nginx?color=2b75d6) ![stars](https://img.shields.io/docker/stars/11notes/nginx?color=e6a50e) [<img src="https://img.shields.io/badge/github-11notes-blue?logo=github">](https://github.com/11notes)
+![size](https://img.shields.io/docker/image-size/11notes/nginx/1.26.2?color=0eb305) ![version](https://img.shields.io/docker/v/11notes/nginx/1.26.2?color=eb7a09) ![pulls](https://img.shields.io/docker/pulls/11notes/nginx?color=2b75d6)
 
 **Nginx base image with additional plugins and custom compiled**
 
@@ -53,6 +53,8 @@ networks:
 | `DEBUG` | Show debug information | |
 | `NGINX_DYNAMIC_RELOAD` | Enable reload of nginx on configuration changes in /nginx/etc (only on successful configuration test!) | |
 
+# SOURCE
+* [11notes/nginx](https://github.com/11notes/docker-nginx)
 
 # PARENT IMAGE
 * [11notes/alpine:stable](https://hub.docker.com/r/11notes/alpine)

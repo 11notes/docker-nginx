@@ -111,6 +111,7 @@
   COPY --from=build /etc/nginx/ /etc/nginx
   COPY --from=build /usr/lib/nginx/modules/ /etc/nginx/modules
   ENV APP_NAME="nginx"
+  ENV APP_VERSION=1.26.2
   ENV APP_ROOT=/nginx
 
 # :: Run

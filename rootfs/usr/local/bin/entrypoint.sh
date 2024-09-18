@@ -1,6 +1,6 @@
 #!/bin/ash
   if [ ! -f "${APP_ROOT}/ssl/default.crt" ]; then
-    elevenLogJSON info "creating default certificate"
+    elevenLogJSON debug "creating default certificate"
     openssl req -x509 -newkey rsa:4096 -subj "/C=XX/ST=XX/L=XX/O=XX/OU=XX/CN=${APP_NAME}" \
       -keyout "${APP_ROOT}/ssl/default.key" \
       -out "${APP_ROOT}/ssl/default.crt" \
@@ -13,7 +13,7 @@
       /sbin/inotifyd /usr/local/bin/io.sh /nginx/etc:cdnym &
     fi
 
-    elevenLogJSON info "starting ${APP_NAME}"
+    elevenLogJSON info "starting ${APP_NAME} (${APP_VERSION})"
     set -- "nginx" \
       -g \
       'daemon off;'

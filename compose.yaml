@@ -3,19 +3,15 @@ services:
     image: "11notes/nginx:1.26.2"
     container_name: "nginx"
     environment:
-      TZ: Europe/Zurich
+      TZ: "Europe/Zurich"
     ports:
       - "8443:8443/tcp"
     volumes:
       - "etc:/nginx/etc"
-      - "www:/nginx/www"
+      - "var:/nginx/var"
       - "ssl:/nginx/ssl"
-    networks:
-      - nginx
-    restart: always
+    restart: "always"
 volumes:
   etc:
-  www:
+  var:
   ssl:
-networks:
-  nginx:

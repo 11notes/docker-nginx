@@ -10,7 +10,7 @@ What can I do with this? This image will serve as a base for nginx related image
 
 # VOLUMES
 * **/nginx/etc** - Directory of vHost config, must end in *.conf (set in /etc/nginx/nginx.conf)
-* **/nginx/www** - Directory of webroot for vHost
+* **/nginx/var** - Directory of webroot for vHost
 * **/nginx/ssl** - Directory of SSL certificates
 
 # COMPOSE
@@ -20,22 +20,18 @@ services:
     image: "11notes/nginx:1.26.2"
     container_name: "nginx"
     environment:
-      TZ: Europe/Zurich
+      TZ: "Europe/Zurich"
     ports:
       - "8443:8443/tcp"
     volumes:
       - "etc:/nginx/etc"
-      - "www:/nginx/www"
+      - "var:/nginx/var"
       - "ssl:/nginx/ssl"
-    networks:
-      - nginx
-    restart: always
+    restart: "always"
 volumes:
   etc:
-  www:
+  var:
   ssl:
-networks:
-  nginx:
 ```
 
 # DEFAULT SETTINGS

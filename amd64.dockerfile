@@ -125,7 +125,7 @@
     RUN set -ex; \
       mkdir -p ${APP_ROOT}; \
       mkdir -p ${APP_ROOT}/etc; \
-      mkdir -p ${APP_ROOT}/www; \
+      mkdir -p ${APP_ROOT}/var; \
       mkdir -p ${APP_ROOT}/ssl; \
       mkdir -p ${APP_ROOT}/cache; \
       mkdir -p ${APP_ROOT}/run; \
@@ -148,7 +148,7 @@
         /var/log/nginx;
 
 # :: Volumes
-  VOLUME ["${APP_ROOT}/etc", "${APP_ROOT}/www", "${APP_ROOT}/ssl"]
+  VOLUME ["${APP_ROOT}/etc", "${APP_ROOT}/var", "${APP_ROOT}/ssl"]
 
 # :: Monitor
   HEALTHCHECK --interval=5s --timeout=2s CMD /usr/local/bin/healthcheck.sh || exit 1

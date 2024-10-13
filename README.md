@@ -6,7 +6,7 @@
 **Nginx base image with additional plugins and custom compiled**
 
 # SYNOPSIS
-What can I do with this? This image will serve as a base for nginx related images that need a high-performance webserver. It can also be used stand alone as a webserver or reverse proxy.
+What can I do with this? This image will serve as a base for nginx related images that need a high-performance webserver. It can also be used stand alone as a webserver or reverse proxy. It will automatically reload on config changes if configured.
 
 # VOLUMES
 * **/nginx/etc** - Directory of vHost config, must end in *.conf (set in /etc/nginx/nginx.conf)

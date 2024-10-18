@@ -10,7 +10,7 @@
   if [ -z "${1}" ]; then
     if [ ! -z ${NGINX_DYNAMIC_RELOAD} ]; then
       elevenLogJSON info "enable dynamic reload"
-      /sbin/inotifyd /usr/local/bin/dynamic_reload.sh ${APP_ROOT}/etc:cdnym &
+      /sbin/inotifyd /usr/local/bin/reload.sh ${APP_ROOT}/etc:cdnym &
     fi
 
     elevenLogJSON info "starting ${APP_NAME} (${APP_VERSION})"

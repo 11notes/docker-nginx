@@ -1,4 +1,5 @@
 #!/bin/ash
+  elevenLogJSON debug "inotifyd event: ${1}"
   elevenLogJSON info "reloading config"
   NGINX_DYNAMIC_RELOAD_LOG=${APP_ROOT}/run/reload.log
   nginx -t &> ${NGINX_DYNAMIC_RELOAD_LOG}

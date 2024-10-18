@@ -50,7 +50,7 @@ volumes:
 | `NGINX_DYNAMIC_RELOAD` | Enable reload of nginx on configuration changes in /nginx/etc (only on successful configuration test!) | |
 
 # SOURCE
-* [11notes/nginx](https://github.com/11notes/docker-nginx)
+* [11notes/nginx:1.26.2](https://github.com/11notes/docker-nginx/tree/1.26.2)
 
 # PARENT IMAGE
 * [11notes/alpine:stable](https://hub.docker.com/r/11notes/alpine)

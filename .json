@@ -1,0 +1,21 @@
+{
+  "image":"11notes/nginx",
+  "name":"nginx",
+  "root":"/nginx",
+  
+  "semver":{
+    "version":"1.26.3",
+    "stable":"1.26.3",
+    "latest":"1.26.3"
+  },
+
+  "readme":{
+    "description":"Nginx with additional plugins and custom compiled",
+    "parent":{
+      "image":"11notes/alpine:stable"
+    },
+    "built":{
+      "nginx":"https://nginx.org"
+    }
+  }
+}

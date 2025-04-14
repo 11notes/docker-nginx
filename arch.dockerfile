@@ -92,7 +92,7 @@ ARG APP_GID=1000
     git clone --recurse-submodules -j8 https://github.com/google/ngx_brotli; \
     mkdir -p ${BUILD_DEPENDENCY_BROTLI_ROOT}/deps/brotli/out; \
     cd ${BUILD_DEPENDENCY_BROTLI_ROOT}/deps/brotli/out; \
-    cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_C_FLAGS="-Ofast -m64 -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" -DCMAKE_CXX_FLAGS="-Ofast -m64 -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" -DCMAKE_INSTALL_PREFIX=./installed ..; \
+    cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_C_FLAGS="-Ofast -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" -DCMAKE_CXX_FLAGS="-Ofast -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" -DCMAKE_INSTALL_PREFIX=./installed ..; \
     cmake --build . --config Release --target brotlienc;
 
   RUN set -ex; \

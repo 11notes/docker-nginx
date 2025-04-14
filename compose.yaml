@@ -1,17 +1,25 @@
+name: "nginx"
 services:
   nginx:
-    image: "11notes/nginx:1.26.2"
-    container_name: "nginx"
+    image: "11notes/nginx:1.26.3"
+    read_only: true
     environment:
       TZ: "Europe/Zurich"
     ports:
-      - "8443:8443/tcp"
+      - "3000:3000/tcp"
+    networks:
+      frontend:
     volumes:
       - "etc:/nginx/etc"
       - "var:/nginx/var"
-      - "ssl:/nginx/ssl"
+    tmpfs:
+      - "/nginx/cache:uid=1000,gid=1000"
+      - "/nginx/run:uid=1000,gid=1000"
     restart: "always"
+
 volumes:
   etc:
   var:
-  ssl:
+
+networks:
+  frontend:

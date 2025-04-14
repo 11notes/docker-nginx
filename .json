@@ -10,12 +10,15 @@
   },
 
   "readme":{
-    "description":"Nginx with additional plugins and custom compiled",
-    "parent":{
-      "image":"11notes/alpine:stable"
-    },
+    "description":"Nginx, slim and distroless to be used behind a reverse proxy or as full version",
     "built":{
       "nginx":"https://nginx.org"
+    },
+    "distroless":{
+      "layers":[
+        "11notes/distroless",
+        "11notes/distroless:curl"
+      ]
     }
   }
 }

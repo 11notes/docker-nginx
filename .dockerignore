@@ -5,3 +5,6 @@ LICENSE
 *.md
 img/
 node_modules/
+
+# custom
+.env

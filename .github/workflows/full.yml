@@ -2,7 +2,7 @@ name: tags
 on:
   push:
     tags:
-      - 'v*'
+      - 'full'
 jobs:
   node:
     runs-on: ubuntu-latest
@@ -17,9 +17,10 @@ jobs:
                 const etc = {
                   build:{
                     args:{
-                      NGINX_CONFIGURATION:'light',
+                      NGINX_CONFIGURATION:'full',
                     }
-                  }
+                  },
+                  semverprefix:'full',
                 };
                 core.exportVariable('WORKFLOW_BASE64JSON', Buffer.from(JSON.stringify(etc)).toString('base64'));
               }catch(e){
@@ -32,4 +33,4 @@ jobs:
         with:
           workflow: docker.yml
           token: "${{ secrets.REPOSITORY_TOKEN }}"
-          inputs: '{ "release":"true", "readme":"true", "etc":"${{ env.WORKFLOW_BASE64JSON }}" }'
+          inputs: '{ "release":"false", "readme":"true", "etc":"${{ env.WORKFLOW_BASE64JSON }}" }'

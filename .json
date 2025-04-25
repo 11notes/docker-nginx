@@ -5,9 +5,9 @@
   "arch":"linux/amd64,linux/arm64,linux/arm/v7",
   
   "semver":{
-    "version":"1.26.3",
-    "stable":"1.26.3",
-    "latest":"1.26.3"
+    "version":"1.28.0",
+    "stable":"1.28.0",
+    "latest":"1.28.0"
   },
 
   "readme":{

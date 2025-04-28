@@ -20,6 +20,9 @@
         "11notes/distroless",
         "11notes/distroless:curl"
       ]
+    },
+    "comparison":{
+      "image":"nginx:1.28.0-alpine-slim"
     }
   }
 }

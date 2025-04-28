@@ -338,22 +338,20 @@ jobs:
 
 
       # README
-      - name: github / checkout master
+      - name: github / checkout HEAD
         continue-on-error: true
-        run: |    
-          git pull     
-          git checkout master
+        run: |     
+          git checkout HEAD
 
       - name: docker / setup comparison images
         if: env.WORKFLOW_CREATE_COMPARISON == 'true'
         continue-on-error: true
         run: |    
-          docker image prune -af
           docker image pull ${{ env.WORKFLOW_CREATE_COMPARISON_IMAGE }}
           docker image pull ${{ env.WORKFLOW_CREATE_COMPARISON_FOREIGN_IMAGE }}
-          docker image ls &> ./docker.image.ls
-          echo "${PWD}"
-          cat ./docker.image.ls
+          docker image ls --filter "reference=${{ env.WORKFLOW_CREATE_COMPARISON_IMAGE }}" --format json | jq --raw-output '.Size' &> ./comparison.size0.log
+          docker image ls --filter "reference=${{ env.WORKFLOW_CREATE_COMPARISON_FOREIGN_IMAGE }}" --format json | jq --raw-output '.Size' &> ./comparison.size1.log
+          docker run --entrypoint "/bin/sh" --rm ${{ env.WORKFLOW_CREATE_COMPARISON_FOREIGN_IMAGE }} -c id &> ./comparison.id.log
 
       - name: github / create README.md
         id: github-readme
@@ -409,7 +407,7 @@ jobs:
             git add LICENSE
           fi
           git commit -m "auto update README.md"
-          git push
+          git push origin HEAD:master
 
 
 

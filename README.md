@@ -1,22 +1,22 @@
 ![banner](https://github.com/11notes/defaults/blob/main/static/img/banner.png?raw=true)
 
 # NGINX
-[<img src="https://img.shields.io/badge/github-source-blue?logo=github&color=040308">](https://github.com/11notes/docker-NGINX)![5px](https://github.com/11notes/defaults/blob/main/static/img/transparent5x2px.png?raw=true)![size](https://img.shields.io/docker/image-size/11notes/nginx/1.26.3?color=0eb305)![5px](https://github.com/11notes/defaults/blob/main/static/img/transparent5x2px.png?raw=true)![version](https://img.shields.io/docker/v/11notes/nginx/1.26.3?color=eb7a09)![5px](https://github.com/11notes/defaults/blob/main/static/img/transparent5x2px.png?raw=true)![pulls](https://img.shields.io/docker/pulls/11notes/nginx?color=2b75d6)![5px](https://github.com/11notes/defaults/blob/main/static/img/transparent5x2px.png?raw=true)[<img src="https://img.shields.io/github/issues/11notes/docker-NGINX?color=7842f5">](https://github.com/11notes/docker-NGINX/issues)![5px](https://github.com/11notes/defaults/blob/main/static/img/transparent5x2px.png?raw=true)![swiss_made](https://img.shields.io/badge/Swiss_Made-FFFFFF?labelColor=FF0000&logo=data:image/svg%2bxml;base64,PHN2ZyB2ZXJzaW9uPSIxIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDMyIDMyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Im0wIDBoMzJ2MzJoLTMyeiIgZmlsbD0iI2YwMCIvPjxwYXRoIGQ9Im0xMyA2aDZ2N2g3djZoLTd2N2gtNnYtN2gtN3YtNmg3eiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==)
+[<img src="https://img.shields.io/badge/github-source-blue?logo=github&color=040308">](https://github.com/11notes/docker-NGINX)![5px](https://github.com/11notes/defaults/blob/main/static/img/transparent5x2px.png?raw=true)![size](https://img.shields.io/docker/image-size/11notes/nginx/1.28.0?color=0eb305)![5px](https://github.com/11notes/defaults/blob/main/static/img/transparent5x2px.png?raw=true)![version](https://img.shields.io/docker/v/11notes/nginx/1.28.0?color=eb7a09)![5px](https://github.com/11notes/defaults/blob/main/static/img/transparent5x2px.png?raw=true)![pulls](https://img.shields.io/docker/pulls/11notes/nginx?color=2b75d6)![5px](https://github.com/11notes/defaults/blob/main/static/img/transparent5x2px.png?raw=true)[<img src="https://img.shields.io/github/issues/11notes/docker-NGINX?color=7842f5">](https://github.com/11notes/docker-NGINX/issues)![5px](https://github.com/11notes/defaults/blob/main/static/img/transparent5x2px.png?raw=true)![swiss_made](https://img.shields.io/badge/Swiss_Made-FFFFFF?labelColor=FF0000&logo=data:image/svg%2bxml;base64,PHN2ZyB2ZXJzaW9uPSIxIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDMyIDMyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Im0wIDBoMzJ2MzJoLTMyeiIgZmlsbD0iI2YwMCIvPjxwYXRoIGQ9Im0xMyA2aDZ2N2g3djZoLTd2N2gtNnYtN2gtN3YtNmg3eiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==)
 
 Nginx, slim and distroless to be used behind a reverse proxy or as full version
 
 # MAIN TAGS 🏷️
 These are the main tags for the image. There is also a tag for each commit and its shorthand sha256 value.
 
-* [1.26.3](https://hub.docker.com/r/11notes/nginx/tags?name=1.26.3)
+* [1.28.0](https://hub.docker.com/r/11notes/nginx/tags?name=1.28.0)
 * [stable](https://hub.docker.com/r/11notes/nginx/tags?name=stable)
 * [latest](https://hub.docker.com/r/11notes/nginx/tags?name=latest)
 
 # REPOSITORIES ☁️
 ```
-docker pull 11notes/nginx:1.26.3
-docker pull ghcr.io/11notes/nginx:1.26.3
-docker pull quay.io/11notes/nginx:1.26.3
+docker pull 11notes/nginx:1.28.0
+docker pull ghcr.io/11notes/nginx:1.28.0
+docker pull quay.io/11notes/nginx:1.28.0
 ```
 
 # SYNOPSIS 📖
@@ -32,8 +32,20 @@ docker pull quay.io/11notes/nginx:1.26.3
 >* This image is created via a secure, pinned CI/CD process and immune to upstream attacks, most other images have upstream dependencies that can be exploited
 >* This image contains a proper health check that verifies the app is actually working, most other images have either no health check or only check if a port is open or ping works
 >* This image works as read-only, most other images need to write files to the image filesystem
+>* This image is a lot smaller than most other images
 
 If you value security, simplicity and the ability to interact with the maintainer and developer of an image. Using my images is a great start in that direction.
+
+# COMPARISON 🏁
+Below you find a comparison between this image and the most used one.
+
+| **image**![128px](https://github.com/11notes/defaults/blob/main/static/img/transparent128x1px.png?raw=true) | 11notes/nginx:1.28.0 | nginx:1.28.0-alpine-slim |
+| ---: | :---: | :---: |
+| **image size on disk** | 4.4MB | 11.9MB |
+| **process UID/GID** | 1000/1000 | 0:0 |
+| **distroless?** | ✅ | ❌ |
+
+
 
 # DEFAULT CONFIG 📑
 ```yaml
@@ -124,7 +136,7 @@ The default configuration contains no special settings. It enables brotli compre
 name: "nginx"
 services:
   nginx:
-    image: "11notes/nginx:1.26.3"
+    image: "11notes/nginx:1.28.0"
     read_only: true
     environment:
       TZ: "Europe/Zurich"
@@ -183,4 +195,4 @@ networks:
 # ElevenNotes™️
 This image is provided to you at your own risk. Always make backups before updating an image to a different version. Check the [releases](https://github.com/11notes/docker-nginx/releases) for breaking changes. If you have any problems with using this image simply raise an [issue](https://github.com/11notes/docker-nginx/issues), thanks. If you have a question or inputs please create a new [discussion](https://github.com/11notes/docker-nginx/discussions) instead of an issue. You can find all my other repositories on [github](https://github.com/11notes?tab=repositories).
 
-*created 14.04.2025, 08:54:33 (CET)*
+*created 28.04.2025, 11:03:22 (CET)*

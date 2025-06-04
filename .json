@@ -6,8 +6,7 @@
   
   "semver":{
     "version":"1.28.0",
-    "stable":"1.28.0",
-    "latest":"1.28.0"
+    "stable":"1.28.0"
   },
 
   "readme":{

@@ -176,7 +176,6 @@ ARG APP_GID=1000
           --without-http_empty_gif_module \
           --without-http_geo_module \
           --without-http_memcached_module \
-          --without-http_map_module \
           --without-http_ssi_module \
           --without-http_split_clients_module \
           --without-http_fastcgi_module \
@@ -318,7 +317,8 @@ ARG APP_GID=1000
   VOLUME ["${APP_ROOT}/etc", "${APP_ROOT}/var"]
 
 # :: Monitor
-  HEALTHCHECK --interval=5s --timeout=2s CMD ["/usr/local/bin/curl", "-kILs", "--fail", "http://localhost:3000/ping"]
+  HEALTHCHECK --interval=5s --timeout=2s --start-interval=5s \
+    CMD ["/usr/local/bin/curl", "-kILs", "--fail", "http://localhost:3000/ping"]
 
 # :: Start
   USER ${APP_UID}:${APP_GID}

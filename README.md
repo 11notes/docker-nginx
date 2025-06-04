@@ -37,13 +37,14 @@ docker pull quay.io/11notes/nginx:1.28.0
 If you value security, simplicity and the ability to interact with the maintainer and developer of an image. Using my images is a great start in that direction.
 
 # COMPARISON 🏁
-Below you find a comparison between this image and the most used one.
+Below you find a comparison between this image and the most used or original one.
 
-| **image**![128px](https://github.com/11notes/defaults/blob/main/static/img/transparent128x1px.png?raw=true) | 11notes/nginx:1.28.0 | nginx:1.28.0-alpine-slim |
+| ![128px](https://github.com/11notes/defaults/blob/main/static/img/transparent128x1px.png?raw=true)**image** | 11notes/nginx:1.28.0 | nginx:1.28.0-alpine-slim |
 | ---: | :---: | :---: |
 | **image size on disk** | 4.4MB | 11.9MB |
-| **process UID/GID** | 1000/1000 | 0:0 |
+| **process UID/GID** | 1000/1000 | 0/0 |
 | **distroless?** | ✅ | ❌ |
+| **rootless?** | ✅ | ❌ |
 
 
 
@@ -195,4 +196,4 @@ networks:
 # ElevenNotes™️
 This image is provided to you at your own risk. Always make backups before updating an image to a different version. Check the [releases](https://github.com/11notes/docker-nginx/releases) for breaking changes. If you have any problems with using this image simply raise an [issue](https://github.com/11notes/docker-nginx/issues), thanks. If you have a question or inputs please create a new [discussion](https://github.com/11notes/docker-nginx/discussions) instead of an issue. You can find all my other repositories on [github](https://github.com/11notes?tab=repositories).
 
-*created 28.04.2025, 11:03:22 (CET)*
+*created 28.04.2025, 12:12:02 (CET)*

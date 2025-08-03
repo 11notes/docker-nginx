@@ -9,7 +9,8 @@
   },
 
   "readme":{
-    "description":"Nginx, slim and distroless to be used behind a reverse proxy or as full version",
+    "description":"Nginx, slim and distroless to be used behind a reverse proxy or as full version as a proxy",
+    "introduction": "nginx (engine x) is an HTTP web server, reverse proxy, content cache, load balancer, TCP/UDP proxy server, and mail proxy server.",
     "built":{
       "nginx":"https://nginx.org"
     },
@@ -20,7 +21,7 @@
       ]
     },
     "comparison":{
-      "image":"nginx:1.28.0-alpine-slim"
+      "image":"nginx:1.28.0"
     }
   }
 }

@@ -1,40 +1,70 @@
-ARG APP_UID=1000
-ARG APP_GID=1000
+# ╔═════════════════════════════════════════════════════╗
+# ║                       SETUP                         ║
+# ╚═════════════════════════════════════════════════════╝
+# GLOBAL
+  ARG APP_UID=1000 \
+      APP_GID=1000 \
+      APP_VERSION=0 \
+      BUILD_NGINX_CONFIGURATION=light \
+      BUILD_DEPENDENCY_OPENSSL_VERSION=3.5.1 \
+      BUILD_DEPENDENCY_ZLIB_VERSION=1.3.1 \
+      BUILD_DEPENDENCY_ZLIB_SHA256=9a93b2b7dfdac77ceba5a558a580e74667dd6fede4585b91eefb60f03b72df23 \
+      BUILD_DEPENDENCY_PCRE2_VERSION=10.45 \
+      BUILD_DEPENDENCY_HEADERS_MORE_VERSION=0.39 \
+      BUILD_DEPENDENCY_QUICKJS_VERSION= \
+      BUILD_DEPENDENCY_NJS_VERSION=0.8.10 \
+      BUILD_NGINX_PREFIX=/etc/nginx
 
-# :: Util
-  FROM 11notes/util AS util
+  ARG BUILD_ROOT=/nginx-${APP_VERSION} \
+      BUILD_DEPENDENCY_OPENSSL_ROOT=/openssl-${BUILD_DEPENDENCY_OPENSSL_VERSION} \
+      BUILD_DEPENDENCY_ZLIB_ROOT=/zlib-${BUILD_DEPENDENCY_ZLIB_VERSION} \
+      BUILD_DEPENDENCY_PCRE2_ROOT=/pcre2-${BUILD_DEPENDENCY_PCRE2_VERSION} \
+      BUILD_DEPENDENCY_HEADERS_MORE_ROOT=/headers-more-nginx-module-${BUILD_DEPENDENCY_HEADERS_MORE_VERSION} \
+      BUILD_DEPENDENCY_BROTLI_ROOT=/ngx_brotli \
+      BUILD_DEPENDENCY_NJS_ROOT=/njs-${BUILD_DEPENDENCY_NJS_VERSION} \
+      BUILD_DEPENDENCY_QUICKJS_ROOT=/quickjs${BUILD_DEPENDENCY_QUICKJS_VERSION} \
+      BUILD_BIN=${BUILD_ROOT}/objs/nginx
 
-# :: Build / nginx
+# :: FOREIGN IMAGES
+  FROM 11notes/distroless AS distroless
+  FROM 11notes/distroless:curl AS distroless-curl
+  FROM 11notes/util:bin AS util-bin
+
+# ╔═════════════════════════════════════════════════════╗
+# ║                       BUILD                         ║
+# ╚═════════════════════════════════════════════════════╝
+# :: NGINX
   FROM alpine AS build
-  ARG TARGETARCH
-  ARG TARGETPLATFORM
-  ARG TARGETVARIANT
-  ARG APP_ROOT
-  ARG APP_VERSION
-  ARG APP_NGINX_CONFIGURATION
-  ENV BUILD_ROOT=/nginx-${APP_VERSION}
-  ENV BUILD_BIN=${BUILD_ROOT}/objs/nginx
-  ENV NGINX_PREFIX=/etc/nginx
-  ENV BUILD_DEPENDENCY_OPENSSL_VERSION=3.5.0
-  ENV BUILD_DEPENDENCY_OPENSSL_ROOT=/openssl-${BUILD_DEPENDENCY_OPENSSL_VERSION}
-  ENV BUILD_DEPENDENCY_ZLIB_VERSION=1.3.1
-  ENV BUILD_DEPENDENCY_ZLIB_ROOT=/zlib-${BUILD_DEPENDENCY_ZLIB_VERSION}
-  ENV BUILD_DEPENDENCY_PCRE2_VERSION=10.45
-  ENV BUILD_DEPENDENCY_PCRE2_ROOT=/pcre2-${BUILD_DEPENDENCY_PCRE2_VERSION}
-  ENV BUILD_DEPENDENCY_HEADERS_MORE_VERSION=0.38
-  ENV BUILD_DEPENDENCY_HEADERS_MORE_ROOT=/headers-more-nginx-module-${BUILD_DEPENDENCY_HEADERS_MORE_VERSION}
-  ENV BUILD_DEPENDENCY_BROTLI_ROOT=/ngx_brotli
-  ENV BUILD_DEPENDENCY_NJS_VERSION=0.8.10
-  ENV BUILD_DEPENDENCY_NJS_ROOT=/njs-${BUILD_DEPENDENCY_NJS_VERSION}
-  ENV BUILD_DEPENDENCY_QUICKJS_VERSION=
-  ENV BUILD_DEPENDENCY_QUICKJS_ROOT=/quickjs${BUILD_DEPENDENCY_QUICKJS_VERSION}
+  COPY --from=util-bin / /
+  COPY ./key.txt /
 
-  USER root
-
-  COPY --from=util /usr/local/bin/ /usr/local/bin
+  ARG APP_UID \
+      APP_GID \
+      APP_VERSION \
+      APP_ROOT \
+      BUILD_DEPENDENCY_OPENSSL_VERSION \
+      BUILD_DEPENDENCY_ZLIB_VERSION \
+      BUILD_DEPENDENCY_ZLIB_SHA256 \
+      BUILD_DEPENDENCY_PCRE2_VERSION \
+      BUILD_DEPENDENCY_HEADERS_MORE_VERSION \
+      BUILD_DEPENDENCY_QUICKJS_VERSION \
+      BUILD_DEPENDENCY_NJS_VERSION \
+      BUILD_NGINX_PREFIX \
+      BUILD_NGINX_CONFIGURATION \
+      BUILD_ROOT \
+      BUILD_DEPENDENCY_OPENSSL_ROOT \
+      BUILD_DEPENDENCY_ZLIB_ROOT \
+      BUILD_DEPENDENCY_PCRE2_ROOT \
+      BUILD_DEPENDENCY_HEADERS_MORE_ROOT \
+      BUILD_DEPENDENCY_BROTLI_ROOT \
+      BUILD_DEPENDENCY_NJS_ROOT \
+      BUILD_DEPENDENCY_QUICKJS_ROOT \
+      BUILD_BIN
 
   RUN set -ex; \
     apk --update --no-cache add \
+      gpg \
+      gpg-agent \
       cmake \
       autoconf \
       automake \
@@ -67,60 +97,63 @@ ARG APP_GID=1000
       brotli-dev \
       libgd \
       tar \
-      xz \
-      upx;
+      pv \
+      jq \
+      xz;
+
+  RUN set -ex; \
+    gpg --import /key.txt;
 
   RUN set -ex; \
     cd /; \
-    curl -SL https://nginx.org/download/nginx-${APP_VERSION}.tar.gz | tar -zxC /; \
-    curl -SL https://zlib.net/fossils/zlib-${BUILD_DEPENDENCY_ZLIB_VERSION}.tar.gz | tar -zxC /; \
-    curl -SL https://github.com/PCRE2Project/pcre2/releases/download/pcre2-${BUILD_DEPENDENCY_PCRE2_VERSION}/pcre2-${BUILD_DEPENDENCY_PCRE2_VERSION}.tar.gz | tar -zxC /; \
-    curl -SL https://github.com/openresty/headers-more-nginx-module/archive/v${BUILD_DEPENDENCY_HEADERS_MORE_VERSION}.tar.gz | tar -zxC /; 
+    eleven asset gpg-asc https://nginx.org/download/nginx-${APP_VERSION}.tar.gz https://nginx.org/download/nginx-${APP_VERSION}.tar.gz.asc; \
+    eleven asset sha256 https://zlib.net/zlib-${BUILD_DEPENDENCY_ZLIB_VERSION}.tar.gz ${BUILD_DEPENDENCY_ZLIB_SHA256}; \
+    eleven github asset PCRE2Project/pcre2 pcre2-${BUILD_DEPENDENCY_PCRE2_VERSION} pcre2-${BUILD_DEPENDENCY_PCRE2_VERSION}.tar.gz; \
+    eleven github asset openresty/headers-more-nginx-module v${BUILD_DEPENDENCY_HEADERS_MORE_VERSION} v${BUILD_DEPENDENCY_HEADERS_MORE_VERSION}.tar.gz;
     
   RUN set -ex; \
     #build OpenSSL
-    case "${APP_NGINX_CONFIGURATION}" in \
+    case "${BUILD_NGINX_CONFIGURATION}" in \
       "full") \
         cd /; \
-        curl -SL https://github.com/openssl/openssl/releases/download/openssl-${BUILD_DEPENDENCY_OPENSSL_VERSION}/openssl-${BUILD_DEPENDENCY_OPENSSL_VERSION}.tar.gz | tar -zxC /; \
+        eleven github asset openssl/openssl openssl-${BUILD_DEPENDENCY_OPENSSL_VERSION} openssl-${BUILD_DEPENDENCY_OPENSSL_VERSION}.tar.gz; \
       ;; \
     esac;
 
   RUN set -ex; \
     # build brotli
     cd /; \
-    git clone --recurse-submodules -j8 https://github.com/google/ngx_brotli; \
+    eleven git clone google/ngx_brotli.git; \
     mkdir -p ${BUILD_DEPENDENCY_BROTLI_ROOT}/deps/brotli/out; \
     cd ${BUILD_DEPENDENCY_BROTLI_ROOT}/deps/brotli/out; \
-    cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_C_FLAGS="-Ofast -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" -DCMAKE_CXX_FLAGS="-Ofast -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" -DCMAKE_INSTALL_PREFIX=./installed ..; \
-    cmake --build . --config Release --target brotlienc;
+    cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_C_FLAGS="-Ofast -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" -DCMAKE_CXX_FLAGS="-Ofast -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" -DCMAKE_INSTALL_PREFIX=./installed .. 2>&1 > /dev/null; \
+    cmake --build . --config Release --target brotlienc 2>&1 > /dev/null;
 
   RUN set -ex; \
     #build QuickJS
-    case "${APP_NGINX_CONFIGURATION}" in \
+    case "${BUILD_NGINX_CONFIGURATION}" in \
       "full") \
         cd /; \
-        git clone https://github.com/bellard/quickjs; \
-        curl -SL https://github.com/nginx/njs/archive/refs/tags/${BUILD_DEPENDENCY_NJS_VERSION}.tar.gz | tar -zxC /; \
+        eleven github asset nginx/njs ${BUILD_DEPENDENCY_NJS_VERSION} ${BUILD_DEPENDENCY_NJS_VERSION}.tar.gz; \
         cd ${BUILD_DEPENDENCY_QUICKJS_ROOT}; \
-        CFLAGS='-fPIC -static -static-libgcc' make libquickjs.a; \
+        CFLAGS='-fPIC -static -static-libgcc' make libquickjs.a 2>&1 > /dev/null; \
       ;; \
     esac;
 
   RUN set -ex; \
     #build XLST
-    case "${APP_NGINX_CONFIGURATION}" in \
+    case "${BUILD_NGINX_CONFIGURATION}" in \
       "full") \
         cd /; \
-        curl -SL https://download.gnome.org/sources/libxml2/2.14/libxml2-2.14.1.tar.xz | tar -xJC /; \
-        curl -SL https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.43.tar.xz | tar -xJC /; \
+        eleven asset sha256-sum https://download.gnome.org/sources/libxml2/2.14/libxml2-2.14.1.tar.xz https://download.gnome.org/sources/libxml2/2.14/libxml2-2.14.1.sha256sum; \
+        eleven asset sha256-sum https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.43.tar.xz https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.43.sha256sum; \
         cd /libxml2-2.14.1; \
         ./configure \
           --prefix="/usr" \
           --disable-shared \
           --enable-static \
           --without-python; \
-        make -s -j $(nproc); \
+        make -s -j $(nproc) 2>&1 > /dev/null; \
         make install; \
         cd /libxslt-1.1.43; \
         ./configure \
@@ -128,13 +161,13 @@ ARG APP_GID=1000
           --disable-shared \
           --enable-static \
           --without-python; \
-        make -s -j $(nproc); \
+        make -s -j $(nproc) 2>&1 > /dev/null; \
         make install; \
       ;; \
     esac;
 
   RUN set -ex; \
-    case "${APP_NGINX_CONFIGURATION}" in \
+    case "${BUILD_NGINX_CONFIGURATION}" in \
       "light") \
         cd ${BUILD_ROOT}; \
         ./configure \
@@ -142,10 +175,10 @@ ARG APP_GID=1000
           --with-pcre=${BUILD_DEPENDENCY_PCRE2_ROOT} \
           --add-module=${BUILD_DEPENDENCY_HEADERS_MORE_ROOT} \
           --add-module=${BUILD_DEPENDENCY_BROTLI_ROOT} \
-          --prefix=${NGINX_PREFIX} \
+          --prefix=${BUILD_NGINX_PREFIX} \
           --sbin-path=${BUILD_BIN} \
           --modules-path=${APP_ROOT}/lib/modules \
-          --conf-path=${NGINX_PREFIX}/nginx.conf \
+          --conf-path=${BUILD_NGINX_PREFIX}/nginx.conf \
           --error-log-path=${APP_ROOT}/log/error.log \
           --http-log-path=${APP_ROOT}/log/access.log \
           --pid-path=${APP_ROOT}/run/nginx.pid \
@@ -197,10 +230,10 @@ ARG APP_GID=1000
           --add-module=${BUILD_DEPENDENCY_BROTLI_ROOT} \
           --add-module=${BUILD_DEPENDENCY_NJS_ROOT}/nginx \
           --with-openssl=${BUILD_DEPENDENCY_OPENSSL_ROOT} \
-          --prefix=${NGINX_PREFIX} \
+          --prefix=${BUILD_NGINX_PREFIX} \
           --sbin-path=${BUILD_BIN} \
           --modules-path=${APP_ROOT}/lib/modules \
-          --conf-path=${NGINX_PREFIX}/nginx.conf \
+          --conf-path=${BUILD_NGINX_PREFIX}/nginx.conf \
           --error-log-path=${APP_ROOT}/log/error.log \
           --http-log-path=${APP_ROOT}/log/access.log \
           --pid-path=${APP_ROOT}/run/nginx.pid \
@@ -246,72 +279,68 @@ ARG APP_GID=1000
 
   RUN set -ex; \
     cd ${BUILD_ROOT}; \
-    make -s -j $(nproc); \
-    eleven checkStatic ${BUILD_BIN};
+    make -s -j $(nproc);
 
   RUN set -ex; \
-    mkdir -p /distroless/usr/local/bin; \
-    mkdir -p /distroless${NGINX_PREFIX}; \
-    cp -R ${BUILD_ROOT}/conf/* /distroless${NGINX_PREFIX}; \
-    rm /distroless${NGINX_PREFIX}/nginx.conf; \
-    eleven strip ${BUILD_BIN}; \
-    cp ${BUILD_BIN} /distroless/usr/local/bin;
-
-  COPY ./rootfs/etc /distroless/etc
-
-# :: Distroless / nginx
-  FROM scratch AS distroless-nginx
-  COPY --from=build /distroless/ /
-
-
-# :: Build / file system
-  FROM alpine AS fs
-  ARG APP_ROOT
-  USER root
+    eleven distroless ${BUILD_BIN};
 
   RUN set -ex; \
-    mkdir -p ${APP_ROOT}/etc; \
-    mkdir -p ${APP_ROOT}/var; \
-    mkdir -p ${APP_ROOT}/run; \
-    mkdir -p ${APP_ROOT}/lib/modules; \
-    mkdir -p ${APP_ROOT}/cache; \
-    mkdir -p ${APP_ROOT}/log; \
-    ln -sf /dev/stdout ${APP_ROOT}/log/access.log; \
-    ln -sf /dev/stderr ${APP_ROOT}/log/error.log;
+    mkdir -p /distroless${BUILD_NGINX_PREFIX}; \
+    cp -R ${BUILD_ROOT}/conf/* /distroless${BUILD_NGINX_PREFIX}; \
+    rm /distroless${BUILD_NGINX_PREFIX}/nginx.conf;
 
-  COPY ./rootfs/nginx ${APP_ROOT}
+  COPY ./rootfs/etc/nginx/ /distroless${BUILD_NGINX_PREFIX}
 
-# :: Distroless / file system
-  FROM scratch AS distroless-fs
+  RUN set -ex; \
+    ls -lah /distroless${BUILD_NGINX_PREFIX}; \
+    cat /distroless${BUILD_NGINX_PREFIX}/nginx.conf;
+
+# :: FILE-SYSTEM
+  FROM alpine AS file-system
   ARG APP_ROOT
-  COPY --from=fs ${APP_ROOT} /${APP_ROOT}
+  COPY ./rootfs/nginx /distroless${APP_ROOT}
+
+  RUN set -ex; \
+    mkdir -p /distroless${APP_ROOT}/etc; \
+    mkdir -p /distroless${APP_ROOT}/var; \
+    mkdir -p /distroless${APP_ROOT}/run; \
+    mkdir -p /distroless${APP_ROOT}/lib/modules; \
+    mkdir -p /distroless${APP_ROOT}/cache; \
+    mkdir -p /distroless${APP_ROOT}/log; \
+    ln -sf /dev/stdout /distroless${APP_ROOT}/log/access.log; \
+    ln -sf /dev/stderr /distroless${APP_ROOT}/log/error.log;
 
 
-# :: Header
-  FROM 11notes/distroless AS distroless
-  FROM 11notes/distroless:curl AS distroless-curl
+# ╔═════════════════════════════════════════════════════╗
+# ║                       IMAGE                         ║
+# ╚═════════════════════════════════════════════════════╝
+  # :: HEADER
   FROM scratch
 
-  # :: arguments
-    ARG TARGETARCH
-    ARG APP_IMAGE
-    ARG APP_NAME
-    ARG APP_VERSION
-    ARG APP_ROOT
-    ARG APP_UID
-    ARG APP_GID
+  # :: default arguments
+    ARG TARGETPLATFORM \
+        TARGETOS \
+        TARGETARCH \
+        TARGETVARIANT \
+        APP_IMAGE \
+        APP_NAME \
+        APP_VERSION \
+        APP_ROOT \
+        APP_UID \
+        APP_GID \
+        APP_NO_CACHE
 
-  # :: environment
-    ENV APP_IMAGE=${APP_IMAGE}
-    ENV APP_NAME=${APP_NAME}
-    ENV APP_VERSION=${APP_VERSION}
-    ENV APP_ROOT=${APP_ROOT}
+  # :: default environment
+    ENV APP_IMAGE=${APP_IMAGE} \
+        APP_NAME=${APP_NAME} \
+        APP_VERSION=${APP_VERSION} \
+        APP_ROOT=${APP_ROOT}
 
   # :: multi-stage
-    COPY --from=distroless --chown=${APP_UID}:${APP_GID} / /
-    COPY --from=distroless-fs --chown=${APP_UID}:${APP_GID} / /
-    COPY --from=distroless-curl --chown=${APP_UID}:${APP_GID} / /
-    COPY --from=distroless-nginx --chown=${APP_UID}:${APP_GID} / /
+    COPY --from=distroless / /
+    COPY --from=distroless-curl / /
+    COPY --from=build /distroless/ /
+    COPY --from=file-system --chown=${APP_UID}:${APP_GID} /distroless/ /
 
 # :: Volumes
   VOLUME ["${APP_ROOT}/etc", "${APP_ROOT}/var"]

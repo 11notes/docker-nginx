@@ -33,7 +33,7 @@ Below you find a comparison between this image and the most used or original one
 
 | **image** | 11notes/nginx:1.28.0 | nginx:1.28.0 |
 | ---: | :---: | :---: |
-| **image size on disk** | 3.69MB | 192MB |
+| **image size on disk** | 3.68MB | 192MB |
 | **process UID/GID** | 1000/1000 | 0/0 |
 | **distroless?** | ✅ | ❌ |
 | **rootless?** | ✅ | ❌ |
@@ -206,4 +206,4 @@ docker pull quay.io/11notes/nginx:1.28.0
 # ElevenNotes™️
 This image is provided to you at your own risk. Always make backups before updating an image to a different version. Check the [releases](https://github.com/11notes/docker-nginx/releases) for breaking changes. If you have any problems with using this image simply raise an [issue](https://github.com/11notes/docker-nginx/issues), thanks. If you have a question or inputs please create a new [discussion](https://github.com/11notes/docker-nginx/discussions) instead of an issue. You can find all my other repositories on [github](https://github.com/11notes?tab=repositories).
 
-*created 03.08.2025, 03:35:59 (CET)*
+*created 06.08.2025, 08:07:00 (CET)*

@@ -347,7 +347,7 @@
 
 # :: Monitor
   HEALTHCHECK --interval=5s --timeout=2s --start-interval=5s \
-    CMD ["/usr/local/bin/localhealth", "http://localhost:3000/ping", "-I"]
+    CMD ["/usr/local/bin/localhealth", "http://127.0.0.1:3000/ping", "-I"]
 
 # :: Start
   USER ${APP_UID}:${APP_GID}

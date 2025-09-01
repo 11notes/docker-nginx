@@ -13,6 +13,7 @@
       BUILD_DEPENDENCY_HEADERS_MORE_VERSION=0.39 \
       BUILD_DEPENDENCY_QUICKJS_VERSION= \
       BUILD_DEPENDENCY_NJS_VERSION=0.9.1 \
+      BUILD_DEPENDENCY_GEOIP2_VERSION=3.4 \
       BUILD_NGINX_PREFIX=/etc/nginx
 
   ARG BUILD_ROOT=/nginx-${APP_VERSION} \
@@ -23,6 +24,7 @@
       BUILD_DEPENDENCY_BROTLI_ROOT=/ngx_brotli \
       BUILD_DEPENDENCY_NJS_ROOT=/njs-${BUILD_DEPENDENCY_NJS_VERSION} \
       BUILD_DEPENDENCY_QUICKJS_ROOT=/quickjs${BUILD_DEPENDENCY_QUICKJS_VERSION} \
+      BUILD_DEPENDENCY_GEOIP2_ROOT=/ngx_http_geoip2_module \
       BUILD_BIN=${BUILD_ROOT}/objs/nginx
 
 # :: FOREIGN IMAGES
@@ -168,6 +170,15 @@
     esac;
 
   RUN set -ex; \
+    #build GeoIP2
+    case "${APP_NGINX_CONFIGURATION}" in \
+      "full") \
+        cd /; \
+        eleven git clone leev/ngx_http_geoip2_module.git ${BUILD_DEPENDENCY_GEOIP2_VERSION}; \
+      ;; \
+    esac;
+
+  RUN set -ex; \
     case "${APP_NGINX_CONFIGURATION}" in \
       "light") \
         cd ${BUILD_ROOT}; \
@@ -222,7 +233,7 @@
           --with-cc-opt="-O2 -static -static-libgcc" \
           --with-ld-opt="-s -static"; \
       ;; \
-      "full") \       
+      "full") \
         cd ${BUILD_ROOT}; \
         ./configure \
           --with-zlib=${BUILD_DEPENDENCY_ZLIB_ROOT} \
@@ -230,6 +241,7 @@
           --add-module=${BUILD_DEPENDENCY_HEADERS_MORE_ROOT} \
           --add-module=${BUILD_DEPENDENCY_BROTLI_ROOT} \
           --add-module=${BUILD_DEPENDENCY_NJS_ROOT}/nginx \
+          --add-module=${BUILD_DEPENDENCY_GEOIP2_ROOT} \
           --with-openssl=${BUILD_DEPENDENCY_OPENSSL_ROOT} \
           --prefix=${BUILD_NGINX_PREFIX} \
           --sbin-path=${BUILD_BIN} \

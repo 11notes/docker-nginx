@@ -243,7 +243,7 @@
           --add-module=${BUILD_DEPENDENCY_HEADERS_MORE_ROOT} \
           --add-module=${BUILD_DEPENDENCY_BROTLI_ROOT} \
           --add-module=${BUILD_DEPENDENCY_NJS_ROOT}/nginx \
-          #--add-module=${BUILD_DEPENDENCY_GEOIP2_ROOT} \
+          --add-module=${BUILD_DEPENDENCY_GEOIP2_ROOT} \
           --with-openssl=${BUILD_DEPENDENCY_OPENSSL_ROOT} \
           --prefix=${BUILD_NGINX_PREFIX} \
           --sbin-path=${BUILD_BIN} \
@@ -273,13 +273,11 @@
           --with-http_secure_link_module \
           --with-http_stub_status_module \
           --with-http_auth_request_module \
-          #--with-http_geoip_module \
           --with-threads \
           --with-stream \
           --with-stream_ssl_module \
           --with-stream_ssl_preread_module \
           --with-stream_realip_module \
-          #--with-stream_geoip_module \
           --with-http_slice_module \
           --with-http_xslt_module \
           --with-mail \

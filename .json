@@ -2,7 +2,8 @@
   "image":"11notes/nginx",
   "name":"nginx",
   "root":"/nginx",
-  
+  "platform":"amd64,arm64",
+
   "semver":{
     "version":"1.28.0",
     "stable":"1.28.0"

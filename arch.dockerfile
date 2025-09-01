@@ -5,7 +5,7 @@
   ARG APP_UID=1000 \
       APP_GID=1000 \
       APP_VERSION=0 \
-      BUILD_NGINX_CONFIGURATION=light \
+      APP_NGINX_CONFIGURATION=light \
       BUILD_DEPENDENCY_OPENSSL_VERSION=3.5.1 \
       BUILD_DEPENDENCY_ZLIB_VERSION=1.3.1 \
       BUILD_DEPENDENCY_ZLIB_SHA256=9a93b2b7dfdac77ceba5a558a580e74667dd6fede4585b91eefb60f03b72df23 \
@@ -50,7 +50,7 @@
       BUILD_DEPENDENCY_QUICKJS_VERSION \
       BUILD_DEPENDENCY_NJS_VERSION \
       BUILD_NGINX_PREFIX \
-      BUILD_NGINX_CONFIGURATION \
+      APP_NGINX_CONFIGURATION \
       BUILD_ROOT \
       BUILD_DEPENDENCY_OPENSSL_ROOT \
       BUILD_DEPENDENCY_ZLIB_ROOT \
@@ -113,7 +113,7 @@
     
   RUN set -ex; \
     #build OpenSSL
-    case "${BUILD_NGINX_CONFIGURATION}" in \
+    case "${APP_NGINX_CONFIGURATION}" in \
       "full") \
         cd /; \
         eleven github asset openssl/openssl openssl-${BUILD_DEPENDENCY_OPENSSL_VERSION} openssl-${BUILD_DEPENDENCY_OPENSSL_VERSION}.tar.gz; \
@@ -131,7 +131,7 @@
 
   RUN set -ex; \
     #build QuickJS
-    case "${BUILD_NGINX_CONFIGURATION}" in \
+    case "${APP_NGINX_CONFIGURATION}" in \
       "full") \
         cd /; \
         eleven github asset nginx/njs ${BUILD_DEPENDENCY_NJS_VERSION} ${BUILD_DEPENDENCY_NJS_VERSION}.tar.gz; \
@@ -142,7 +142,7 @@
 
   RUN set -ex; \
     #build XLST
-    case "${BUILD_NGINX_CONFIGURATION}" in \
+    case "${APP_NGINX_CONFIGURATION}" in \
       "full") \
         cd /; \
         eleven asset sha256-sum https://download.gnome.org/sources/libxml2/2.14/libxml2-2.14.1.tar.xz https://download.gnome.org/sources/libxml2/2.14/libxml2-2.14.1.sha256sum; \
@@ -167,7 +167,7 @@
     esac;
 
   RUN set -ex; \
-    case "${BUILD_NGINX_CONFIGURATION}" in \
+    case "${APP_NGINX_CONFIGURATION}" in \
       "light") \
         cd ${BUILD_ROOT}; \
         ./configure \
@@ -290,10 +290,6 @@
     rm /distroless${BUILD_NGINX_PREFIX}/nginx.conf;
 
   COPY ./rootfs/etc/nginx/ /distroless${BUILD_NGINX_PREFIX}
-
-  RUN set -ex; \
-    ls -lah /distroless${BUILD_NGINX_PREFIX}; \
-    cat /distroless${BUILD_NGINX_PREFIX}/nginx.conf;
 
 # :: FILE-SYSTEM
   FROM alpine AS file-system

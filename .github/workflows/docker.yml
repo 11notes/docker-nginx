@@ -50,13 +50,41 @@ jobs:
       stringify: ${{ steps.setup-matrix.outputs.stringify }}
 
     steps:
+      # CHECKOUT REPOSITORY
+      - name: init / checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          ref: ${{ github.ref_name }}
+
       - name: matrix / setup list
         id: setup-matrix
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         with:
           script: |
-            core.info("inputs.platform: ${{ github.event.inputs.platform }}");
-            const platforms = "${{ github.event.inputs.platform }}".split(",");
+            const { existsSync, readFileSync } = require('node:fs');
+            const { inspect } = require('node:util');
+            const { resolve } = require('node:path');
+            const opt = {dot:{}};
+
+            try{
+              const path = resolve('.json');
+              if(existsSync(path)){
+                try{
+                  opt.dot = JSON.parse(readFileSync(path).toString());
+                }catch(e){
+                  throw new Error('could not parse .json');
+                }
+              }else{
+                throw new Error('.json does not exist');
+              }
+            }catch(e){
+              core.setFailed(e);
+            }
+
+            const platforms = (
+              (opt.dot?.platform) ? opt.dot.platform.split(",") : "${{ github.event.inputs.platform }}".split(",")
+            );
+
             const matrix = {include:[]};
             for(const platform of platforms){
               switch(platform){
@@ -65,9 +93,12 @@ jobs:
                 case "arm/v7": matrix.include.push({platform:platform, runner:"ubuntu-24.04-arm"}); break;
               }
             }
+
             const stringify = JSON.stringify(matrix);
             core.setOutput('stringify', stringify);
-            core.info(stringify);
+
+            // print
+              core.info(inspect({opt:opt, matrix:matrix}, {showHidden:false, depth:null, colors:true}));
 
 
   # ╔═════════════════════════════════════════════════════╗

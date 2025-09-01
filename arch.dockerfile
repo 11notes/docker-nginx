@@ -134,6 +134,7 @@
     case "${APP_NGINX_CONFIGURATION}" in \
       "full") \
         cd /; \
+        eleven git clone bellard/quickjs.git; \
         eleven github asset nginx/njs ${BUILD_DEPENDENCY_NJS_VERSION} ${BUILD_DEPENDENCY_NJS_VERSION}.tar.gz; \
         cd ${BUILD_DEPENDENCY_QUICKJS_ROOT}; \
         CFLAGS='-fPIC -static -static-libgcc' make libquickjs.a 2>&1 > /dev/null; \

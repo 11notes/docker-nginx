@@ -10,7 +10,7 @@
   },
 
   "readme":{
-    "description":"Nginx, slim and distroless to be used behind a reverse proxy or as full version as a proxy",
+    "description":"run Nginx rootless and distroless.",
     "introduction": "nginx (engine x) is an HTTP web server, reverse proxy, content cache, load balancer, TCP/UDP proxy server, and mail proxy server.",
     "built":{
       "nginx":"https://nginx.org"

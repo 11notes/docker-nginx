@@ -16,7 +16,7 @@ jobs:
         uses: the-actions-org/workflow-dispatch@3133c5d135c7dbe4be4f9793872b6ef331b53bc7
         with:
           workflow: org.build.yml
-          wait-for-completion: false
+          wait-for-completion: true
           token: "${{ secrets.REPOSITORY_TOKEN }}"
           inputs: '{ "ref":"${{ github.ref_name }}", "etc":"${{ env.WORKFLOW_ETC_BASE64JSON }}" }'
 
@@ -24,6 +24,6 @@ jobs:
         uses: the-actions-org/workflow-dispatch@3133c5d135c7dbe4be4f9793872b6ef331b53bc7
         with:
           workflow: org.build.yml
-          wait-for-completion: false
+          wait-for-completion: true
           token: "${{ secrets.REPOSITORY_TOKEN }}"
           inputs: '{ "ref":"${{ github.ref_name }}", "etc":"${{ env.WORKFLOW_ETC_FULL_BASE64JSON }}" }'

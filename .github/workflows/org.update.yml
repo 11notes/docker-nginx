@@ -104,9 +104,9 @@ jobs:
                 const build = {};
                 if(job.inputs?.build && typeof(job.inputs.build) === 'string'){
                   build.args = {
-                    version_build = job.inputs.build;
+                    version_build:job.inputs.build,
                   };
-                }else if((job.inputs?.build?.args){
+                }else if(job.inputs?.build?.args){
                   build.args = job.inputs.build.args;
                 }
 

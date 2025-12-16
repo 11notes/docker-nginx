@@ -47,7 +47,7 @@ jobs:
           workflow: docker.yml
           wait-for-completion: false
           token: "${{ secrets.REPOSITORY_TOKEN }}"
-          inputs: '{ "release":"true", "readme":"true", "run-name":"build v${{ github.event.inputs.ref }}", "etc":"${{ env.WORKFLOW_BUILD_BASE64JSON }}" }'
+          inputs: '{ "release":"true", "readme":"true", "run-name":"build ${{ github.event.inputs.ref }}", "etc":"${{ env.WORKFLOW_BUILD_BASE64JSON }}" }'
 
       # UNRAID
       - name: build container image for unraid
@@ -57,7 +57,7 @@ jobs:
           workflow: docker.yml
           wait-for-completion: false
           token: "${{ secrets.REPOSITORY_TOKEN }}"
-          inputs: '{ "release":"false", "readme":"false", "run-name":"build unraid v${{ github.event.inputs.ref }}", "etc":"${{ env.WORKFLOW_BUILD_UNRAID_BASE64JSON }}" }'
+          inputs: '{ "release":"false", "readme":"false", "run-name":"build unraid ${{ github.event.inputs.ref }}", "etc":"${{ env.WORKFLOW_BUILD_UNRAID_BASE64JSON }}" }'
 
       # NOBODY
       - name: build container image for nobody
@@ -67,4 +67,4 @@ jobs:
           workflow: docker.yml
           wait-for-completion: false
           token: "${{ secrets.REPOSITORY_TOKEN }}"
-          inputs: '{ "release":"false", "readme":"false", "run-name":"build nobody v${{ github.event.inputs.ref }}", "etc":"${{ env.WORKFLOW_BUILD_NOBODY_BASE64JSON }}" }'
+          inputs: '{ "release":"false", "readme":"false", "run-name":"build nobody ${{ github.event.inputs.ref }}", "etc":"${{ env.WORKFLOW_BUILD_NOBODY_BASE64JSON }}" }'

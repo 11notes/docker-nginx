@@ -1,0 +1,44 @@
+name: cron
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 5 * * *"
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    permissions:
+      actions: read
+      contents: write
+
+    steps:
+      - name: checkout all tags
+        uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
+        with:
+          ref: 'master'
+          fetch-depth: 0
+
+      - name: get latest version and last tag
+        run: |
+          export LATEST_VERSION=$(curl -sSL https://nginx.org/en/download.html | grep -oE '<a href="/download/nginx-[0-9]+.[0-9]+.[0-9]+.tar.gz">nginx-[0-9]+.[0-9]+.[0-9]+</a>' | head -n 2 | tail -n 1 | grep -oE 'nginx-[0-9]+.[0-9]+.[0-9]+' | head -n 2 | tail -n 1 | sed 's|nginx-||')
+          export LATEST_TAG=$(git describe --abbrev=0 --tags `git rev-list --tags --max-count=1` | sed 's|v||')
+          echo "WORKFLOW_UPDATE_BASE64JSON=$(echo '{"version":"'${LATEST_VERSION}'", "tag":"'${LATEST_TAG}'", "unraid":true, "nobody":true}' | base64 -w 0)" >> "${GITHUB_ENV}"
+          echo "WORKFLOW_UPDATE_FULL_BASE64JSON=$(echo '{"version":"'${LATEST_VERSION}'", "tag":"'${LATEST_TAG}'", "unraid":true, "nobody":true, "build":{"args":{"NGINX_CONFIGURATION":"full"}}}' | base64 -w 0)" >> "${GITHUB_ENV}"
+
+      - name: call org.update
+        uses: the-actions-org/workflow-dispatch@3133c5d135c7dbe4be4f9793872b6ef331b53bc7
+        with:
+          wait-for-completion: false
+          workflow: org.update.yml
+          token: "${{ secrets.REPOSITORY_TOKEN }}"
+          inputs: '{ "etc":"${{ env.WORKFLOW_UPDATE_BASE64JSON }}" }'
+
+      - name: call org.update for full
+        uses: the-actions-org/workflow-dispatch@3133c5d135c7dbe4be4f9793872b6ef331b53bc7
+        with:
+          wait-for-completion: false
+          workflow: org.update.yml
+          token: "${{ secrets.REPOSITORY_TOKEN }}"
+          inputs: '{ "etc":"${{ env.WORKFLOW_UPDATE_FULL_BASE64JSON }}" }'

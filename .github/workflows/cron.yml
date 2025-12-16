@@ -41,4 +41,4 @@ jobs:
           wait-for-completion: false
           workflow: org.update.yml
           token: "${{ secrets.REPOSITORY_TOKEN }}"
-          inputs: '{ "etc":"${{ env.WORKFLOW_UPDATE_FULL_BASE64JSON }}" }'
+          inputs: '{ "etc":"${{ env.WORKFLOW_UPDATE_FULL_BASE64JSON }}", "release":"false", "readme":"false" }'

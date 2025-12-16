@@ -26,4 +26,4 @@ jobs:
           workflow: org.build.yml
           wait-for-completion: true
           token: "${{ secrets.REPOSITORY_TOKEN }}"
-          inputs: '{ "ref":"${{ github.ref_name }}", "etc":"${{ env.WORKFLOW_ETC_FULL_BASE64JSON }}" }'
+          inputs: '{ "ref":"${{ github.ref_name }}", "etc":"${{ env.WORKFLOW_ETC_FULL_BASE64JSON }}", "release":"false", "readme":"false" }'

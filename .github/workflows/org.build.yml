@@ -6,10 +6,21 @@ on:
       ref:
         description: 'reference'
         required: true
+
       etc:
         description: 'base64 encoded json string'
         required: false
         default: 'null'
+
+      release:
+        description: 'create a release'
+        required: false
+        default: 'true'
+
+      readme:
+        description: 'create a readme'
+        required: false
+        default: 'true'
 
 jobs:
   build:
@@ -47,7 +58,7 @@ jobs:
           workflow: docker.yml
           wait-for-completion: false
           token: "${{ secrets.REPOSITORY_TOKEN }}"
-          inputs: '{ "release":"true", "readme":"true", "run-name":"build ${{ github.event.inputs.ref }}", "etc":"${{ env.WORKFLOW_BUILD_BASE64JSON }}" }'
+          inputs: '{ "release":"${{ github.event.inputs.release }}", "readme":"${{ github.event.inputs.readme }}", "run-name":"build ${{ github.event.inputs.ref }}", "etc":"${{ env.WORKFLOW_BUILD_BASE64JSON }}" }'
 
       # UNRAID
       - name: build container image for unraid

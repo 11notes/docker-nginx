@@ -217,7 +217,6 @@
           --with-http_stub_status_module \
           --with-http_sub_module \
           --with-http_v2_module \
-          --without-http_autoindex_module \
           --without-http_browser_module \
           --without-http_charset_module \
           --without-http_empty_gif_module \

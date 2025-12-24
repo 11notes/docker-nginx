@@ -1,28 +1,26 @@
 {
-  "image":"11notes/nginx",
-  "name":"nginx",
-  "root":"/nginx",
-  "platform":"amd64,arm64",
-
-  "semver":{
-    "version":"1.28.0",
-    "stable":"1.28.0"
+  "image": "11notes/nginx",
+  "name": "nginx",
+  "root": "/nginx",
+  "platform": "amd64,arm64",
+  "semver": {
+    "version": "1.28.1",
+    "stable": "1.28.0"
   },
-
-  "readme":{
-    "description":"run Nginx rootless and distroless.",
+  "readme": {
+    "description": "run Nginx rootless and distroless.",
     "introduction": "nginx (engine x) is an HTTP web server, reverse proxy, content cache, load balancer, TCP/UDP proxy server, and mail proxy server.",
-    "built":{
-      "nginx":"https://nginx.org"
+    "built": {
+      "nginx": "https://nginx.org"
     },
-    "distroless":{
-      "layers":[
+    "distroless": {
+      "layers": [
         "11notes/distroless",
         "11notes/distroless:localhealth"
       ]
     },
-    "comparison":{
-      "image":"nginx:1.28.0"
+    "comparison": {
+      "image": "nginx:1.28.0"
     }
   }
 }

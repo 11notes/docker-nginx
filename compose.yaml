@@ -1,7 +1,7 @@
 name: "nginx"
 services:
   nginx:
-    image: "11notes/nginx:1.28.2"
+    image: "11notes/nginx:1.28.3"
     read_only: true
     environment:
       TZ: "Europe/Zurich"

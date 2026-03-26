@@ -152,7 +152,7 @@
         eleven github asset GNOME/libxml2 v${APP_LIBXML2_VERSION} v${APP_LIBXML2_VERSION}.tar.gz; \
         eleven github asset GNOME/libxslt v${APP_LIBXSLT_VERSION} v${APP_LIBXSLT_VERSION}.tar.gz; \
         cd /libxml2-${APP_LIBXML2_VERSION}; \
-        ./configure \
+        ./autogen.sh \
           --prefix="/usr" \
           --disable-shared \
           --enable-static \
@@ -160,7 +160,7 @@
         make -s -j $(nproc) 2>&1 > /dev/null; \
         make install; \
         cd /libxslt-${APP_LIBXSLT_VERSION}; \
-        ./configure \
+        ./autogen.sh \
           --prefix="/usr" \
           --disable-shared \
           --enable-static \

@@ -232,9 +232,11 @@ jobs:
             };
 
             try{
+              // wait 2.5s too not trigger 429 from github
+              await new Promise(r => setTimeout(r, 2500));
               const response = await fetch('https://raw.githubusercontent.com/11notes/static/refs/heads/master/src/semver/latest.json');
               if(!response.ok){
-                throw new Error(`error fetching OpenSSL version: ${response.status}`);
+                throw new Error(`error fetching global versions: ${response.status}`);
               }
               const result = await response.json();
               for(const dep in result){
@@ -242,7 +244,7 @@ jobs:
                 core.info(`setting APP_${String(dep).toUpperCase()}_VERSION to ${result[dep]}`);
               }
             }catch(e){
-              core.warning(e);
+              core.setFailed(e);
             }
 
             docker.cache.name = `${docker.image.name}:${docker.image.prefix}buildcache${docker.image.suffix}`;

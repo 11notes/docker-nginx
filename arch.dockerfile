@@ -2,28 +2,27 @@
 # ║                       SETUP                         ║
 # ╚═════════════════════════════════════════════════════╝
 # GLOBAL
-  ARG APP_UID=1000 \
-      APP_GID=1000 \
+  ARG APP_UID= \
+      APP_GID= \
       APP_VERSION=0 \
       APP_NGINX_CONFIGURATION=light \
-      BUILD_DEPENDENCY_OPENSSL_VERSION=3.5.1 \
-      BUILD_DEPENDENCY_ZLIB_VERSION=1.3.1 \
-      BUILD_DEPENDENCY_ZLIB_SHA256=9a93b2b7dfdac77ceba5a558a580e74667dd6fede4585b91eefb60f03b72df23 \
-      BUILD_DEPENDENCY_PCRE2_VERSION=10.45 \
-      BUILD_DEPENDENCY_HEADERS_MORE_VERSION=0.39 \
-      BUILD_DEPENDENCY_QUICKJS_VERSION= \
-      BUILD_DEPENDENCY_NJS_VERSION=0.9.1 \
+      APP_OPENSSL_VERSION=0 \
+      APP_ZLIB_VERSION=0 \
+      APP_PCRE2_VERSION=0 \
+      APP_HEADERS_MORE_NGINX_MODULE_VERSION=0 \
+      APP_NJS_VERSION=0 \
+      APP_LIBXML2_VERSION=0 \
+      APP_LIBXSLT_VERSION=0 \
       BUILD_DEPENDENCY_GEOIP2_VERSION=3.4 \
       BUILD_NGINX_PREFIX=/etc/nginx
 
   ARG BUILD_ROOT=/nginx-${APP_VERSION} \
-      BUILD_DEPENDENCY_OPENSSL_ROOT=/openssl-${BUILD_DEPENDENCY_OPENSSL_VERSION} \
-      BUILD_DEPENDENCY_ZLIB_ROOT=/zlib-${BUILD_DEPENDENCY_ZLIB_VERSION} \
-      BUILD_DEPENDENCY_PCRE2_ROOT=/pcre2-${BUILD_DEPENDENCY_PCRE2_VERSION} \
-      BUILD_DEPENDENCY_HEADERS_MORE_ROOT=/headers-more-nginx-module-${BUILD_DEPENDENCY_HEADERS_MORE_VERSION} \
+      BUILD_DEPENDENCY_OPENSSL_ROOT=/openssl-${APP_OPENSSL_VERSION} \
+      BUILD_DEPENDENCY_ZLIB_ROOT=/zlib-${APP_ZLIB_VERSION} \
+      BUILD_DEPENDENCY_PCRE2_ROOT=/pcre2-${APP_PCRE2_VERSION} \
+      BUILD_DEPENDENCY_HEADERS_MORE_ROOT=/headers-more-nginx-module-${APP_HEADERS_MORE_NGINX_MODULE_VERSION} \
       BUILD_DEPENDENCY_BROTLI_ROOT=/ngx_brotli \
-      BUILD_DEPENDENCY_NJS_ROOT=/njs-${BUILD_DEPENDENCY_NJS_VERSION} \
-      BUILD_DEPENDENCY_QUICKJS_ROOT=/quickjs${BUILD_DEPENDENCY_QUICKJS_VERSION} \
+      BUILD_DEPENDENCY_NJS_ROOT=/njs-${APP_NJS_VERSION} \
       BUILD_DEPENDENCY_GEOIP2_ROOT=/ngx_http_geoip2_module \
       BUILD_BIN=${BUILD_ROOT}/objs/nginx
 
@@ -44,13 +43,12 @@
       APP_GID \
       APP_VERSION \
       APP_ROOT \
-      BUILD_DEPENDENCY_OPENSSL_VERSION \
-      BUILD_DEPENDENCY_ZLIB_VERSION \
+      APP_OPENSSL_VERSION \
+      APP_ZLIB_VERSION \
       BUILD_DEPENDENCY_ZLIB_SHA256 \
-      BUILD_DEPENDENCY_PCRE2_VERSION \
-      BUILD_DEPENDENCY_HEADERS_MORE_VERSION \
-      BUILD_DEPENDENCY_QUICKJS_VERSION \
-      BUILD_DEPENDENCY_NJS_VERSION \
+      APP_PCRE2_VERSION \
+      APP_HEADERS_MORE_NGINX_MODULE_VERSION \
+      APP_NJS_VERSION \
       BUILD_NGINX_PREFIX \
       APP_NGINX_CONFIGURATION \
       BUILD_ROOT \
@@ -111,16 +109,16 @@
   RUN set -ex; \
     cd /; \
     eleven asset gpg-asc https://nginx.org/download/nginx-${APP_VERSION}.tar.gz https://nginx.org/download/nginx-${APP_VERSION}.tar.gz.asc; \
-    eleven asset sha256 https://zlib.net/zlib-${BUILD_DEPENDENCY_ZLIB_VERSION}.tar.gz ${BUILD_DEPENDENCY_ZLIB_SHA256}; \
-    eleven github asset PCRE2Project/pcre2 pcre2-${BUILD_DEPENDENCY_PCRE2_VERSION} pcre2-${BUILD_DEPENDENCY_PCRE2_VERSION}.tar.gz; \
-    eleven github asset openresty/headers-more-nginx-module v${BUILD_DEPENDENCY_HEADERS_MORE_VERSION} v${BUILD_DEPENDENCY_HEADERS_MORE_VERSION}.tar.gz;
-    
+    eleven github asset madler/zlib v${APP_ZLIB_VERSION} zlib-${APP_ZLIB_VERSION}.tar.gz; \
+    eleven github asset PCRE2Project/pcre2 pcre2-${APP_PCRE2_VERSION} pcre2-${APP_PCRE2_VERSION}.tar.gz; \
+    eleven github asset openresty/headers-more-nginx-module v${APP_HEADERS_MORE_NGINX_MODULE_VERSION} v${APP_HEADERS_MORE_NGINX_MODULE_VERSION}.tar.gz;
+
   RUN set -ex; \
     #build OpenSSL
     case "${APP_NGINX_CONFIGURATION}" in \
       "full") \
         cd /; \
-        eleven github asset openssl/openssl openssl-${BUILD_DEPENDENCY_OPENSSL_VERSION} openssl-${BUILD_DEPENDENCY_OPENSSL_VERSION}.tar.gz; \
+        eleven github asset openssl/openssl openssl-${APP_OPENSSL_VERSION} openssl-${APP_OPENSSL_VERSION}.tar.gz; \
       ;; \
     esac;
 
@@ -139,8 +137,8 @@
       "full") \
         cd /; \
         eleven git clone bellard/quickjs.git; \
-        eleven github asset nginx/njs ${BUILD_DEPENDENCY_NJS_VERSION} ${BUILD_DEPENDENCY_NJS_VERSION}.tar.gz; \
-        cd ${BUILD_DEPENDENCY_QUICKJS_ROOT}; \
+        eleven github asset nginx/njs ${APP_NJS_VERSION} ${APP_NJS_VERSION}.tar.gz; \
+        cd /quickjs; \
         CFLAGS='-fPIC -static -static-libgcc' make libquickjs.a 2>&1 > /dev/null; \
       ;; \
     esac;
@@ -150,9 +148,9 @@
     case "${APP_NGINX_CONFIGURATION}" in \
       "full") \
         cd /; \
-        eleven asset sha256-sum https://download.gnome.org/sources/libxml2/2.14/libxml2-2.14.1.tar.xz https://download.gnome.org/sources/libxml2/2.14/libxml2-2.14.1.sha256sum; \
-        eleven asset sha256-sum https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.43.tar.xz https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.43.sha256sum; \
-        cd /libxml2-2.14.1; \
+        eleven github asset GNOME/libxml2 v${APP_LIBXML2_VERSION} v${APP_LIBXML2_VERSION}.tar.gz; \
+        eleven github asset GNOME/libxslt v${APP_LIBXSLT_VERSION} v${APP_LIBXSLT_VERSION}.tar.gz; \
+        cd /libxml2-${APP_LIBXML2_VERSION}; \
         ./configure \
           --prefix="/usr" \
           --disable-shared \
@@ -160,7 +158,7 @@
           --without-python; \
         make -s -j $(nproc) 2>&1 > /dev/null; \
         make install; \
-        cd /libxslt-1.1.43; \
+        cd /libxslt-${APP_LIBXSLT_VERSION}; \
         ./configure \
           --prefix="/usr" \
           --disable-shared \

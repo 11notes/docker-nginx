@@ -24,6 +24,7 @@
       BUILD_DEPENDENCY_BROTLI_ROOT=/ngx_brotli \
       BUILD_DEPENDENCY_NJS_ROOT=/njs-${APP_NJS_VERSION} \
       BUILD_DEPENDENCY_GEOIP2_ROOT=/ngx_http_geoip2_module \
+      BUILD_DEPENDENCY_QUICKJS_ROOT=/quickjs \
       BUILD_BIN=${BUILD_ROOT}/objs/nginx
 
 # :: FOREIGN IMAGES
@@ -139,7 +140,7 @@
         cd /; \
         eleven git clone bellard/quickjs.git; \
         eleven github asset nginx/njs ${APP_NJS_VERSION} ${APP_NJS_VERSION}.tar.gz; \
-        cd /quickjs; \
+        cd ${BUILD_DEPENDENCY_QUICKJS_ROOT}; \
         CFLAGS='-fPIC -static -static-libgcc' make libquickjs.a 2>&1 > /dev/null; \
       ;; \
     esac;

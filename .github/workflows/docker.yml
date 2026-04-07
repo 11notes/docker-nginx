@@ -160,6 +160,13 @@ jobs:
           ref: ${{ github.ref_name }}
           fetch-depth: 0
 
+      # SETUP NODE JS
+      - name: update / setup node
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: '24'
+      - run: npm i semver
+
       # SETUP ENVIRONMENT VARIABLES AND INPUTS
       - name: init / setup environment
         id: setup-environment
@@ -173,6 +180,10 @@ jobs:
             const inputs = `${{ toJSON(github.event.inputs) }}`.
               replace(/"platform":\s*"\[(.+)\]",/i, `"platform": [$1],`);
             const opt = {input:{}, dot:{}};
+            const semverMajor = require("semver/functions/major");
+            const semverMinor = require("semver/functions/minor");
+            const semverValid = require("semver/functions/valid");
+            const semverCoerce = require("semver/functions/coerce");
 
             try{
               if(inputs.length > 0){
@@ -240,7 +251,10 @@ jobs:
               }
               const result = await response.json();
               for(const dep in result){
+                const depSemver = semverValid(semverCoerce(result[dep]));
                 docker.app[`${dep}_version`] = `${result[dep]}`;
+                docker.app[`${dep}_major_minor_version`] = `${semverMajor(depSemver)}.${semverMinor(depSemver)}`;
+                docker.app[`${dep}_major_version`] = semverMajor(depSemver);
                 core.info(`setting APP_${String(dep).toUpperCase()}_VERSION to ${result[dep]}`);
               }
             }catch(e){
@@ -334,8 +348,48 @@ jobs:
               core.exportVariable('WORKFLOW_GRYPE_FAIL_ON_SEVERITY', (opt.dot?.grype?.fail === undefined) ? true : opt.dot.grype.fail);
               core.exportVariable('WORKFLOW_GRYPE_SEVERITY_CUTOFF', (opt.dot?.grype?.severity || 'critical'));
 
+            // check if workflow needs to be registered
+              const dockerfile = opt.input?.etc?.dockerfile || 'arch.dockerfile';
+              try{
+                const path = resolve(`./${dockerfile}`);
+                if(existsSync(path)){
+                  try{
+                    const file = readFileSync(path).toString();
+                    switch(true){
+                      case /11notes\/go\:\$\{APP_GO_VERSION\}/ig.test(file): core.exportVariable('WORKFLOW_IMAGE_DEPENDENCY', 'go'); break;
+                      case /11notes\/python\:\$\{APP_PYTHON_VERSION\}/ig.test(file): core.exportVariable('WORKFLOW_IMAGE_DEPENDENCY', 'python'); break;
+                      case /11notes\/php\:\$\{APP_PHP_VERSION\}/ig.test(file): core.exportVariable('WORKFLOW_IMAGE_DEPENDENCY', 'php'); break;
+                      case /11notes\/php-fpm\:\$\{APP_PHP_VERSION\}/ig.test(file): core.exportVariable('WORKFLOW_IMAGE_DEPENDENCY', 'php'); break;
+                    }
+                  }catch(e){
+                    throw new Error(`could not open ./${dockerfile}: ${e}`);
+                  }
+                }else{
+                  throw new Error(`./${dockerfile} does not exist`);
+                }
+              }catch(e){
+                core.warning(e);
+              }
+
+
             // print
               core.info(inspect({opt:opt, docker:docker}, {showHidden:false, depth:null, colors:true}));
+
+
+      # ╔═════════════════════════════════════════════════════╗
+      # ║             DEPENDENCY REGISTRATION                 ║
+      # ╚═════════════════════════════════════════════════════╝
+      # REGISTER WORKFLOW DEPENDENCY ON BASE IMAGE
+      - name: register image dependency
+        uses: the-actions-org/workflow-dispatch@3133c5d135c7dbe4be4f9793872b6ef331b53bc7
+        if: env.WORKFLOW_IMAGE_DEPENDENCY != '' && matrix.platform == 'amd64'
+        with:
+          wait-for-completion: false
+          workflow: register.dependency.yml
+          token: "${{ secrets.REPOSITORY_TOKEN }}"
+          repo: 11notes/static
+          ref: master
+          inputs: '{ "dependency":"${{ env.WORKFLOW_IMAGE_DEPENDENCY }}", "repository":"${{ github.event.repository.name }}" }'
 
 
       # ╔═════════════════════════════════════════════════════╗

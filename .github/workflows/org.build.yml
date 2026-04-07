@@ -40,7 +40,7 @@ jobs:
             (async()=>{
               try{
                 const etc = JSON.parse(Buffer.from('${{ github.event.inputs.etc }}', 'base64').toString('ascii'));
-                core.exportVariable('WORKFLOW_BUILD_BASE64JSON', Buffer.from(JSON.stringify({build:etc?.build})).toString('base64'));
+                core.exportVariable('WORKFLOW_BUILD_BASE64JSON', Buffer.from(JSON.stringify(etc)).toString('base64'));
                 if(etc?.unraid){
                   core.exportVariable(`WORKFLOW_BUILD_UNRAID`, `${etc.unraid}`);
                   core.exportVariable('WORKFLOW_BUILD_UNRAID_BASE64JSON', Buffer.from(JSON.stringify({semversuffix:"unraid", uid:99, gid:100, build:etc?.build})).toString('base64'));

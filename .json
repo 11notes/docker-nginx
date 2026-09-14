@@ -22,5 +22,7 @@
     "comparison": {
       "image": "nginx:1.28.3"
     }
-  }
+  },
+  "unraid": true,
+  "nobody": true
 }
